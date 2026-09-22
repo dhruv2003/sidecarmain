@@ -1016,6 +1016,9 @@ tailwind.config = {
   function onScroll() {
     header.classList.toggle('scrolled', window.scrollY > 8);
     toTop.classList.toggle('hidden-btn', window.scrollY < 600);
+    if (window.scrollY < 300) {
+      document.querySelectorAll('.nav-link.active').forEach(function (l) { l.classList.remove('active'); });
+    }
   }
 
   // ---- Back to top ----
