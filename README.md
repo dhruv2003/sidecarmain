@@ -37,13 +37,21 @@ Then visit `http://localhost:8080`.
 ## Download page
 
 `download.html` is linked from every "Download Sidecar" / "Try your first
-POC" button. It fetches the latest release of
-[dhruv2003/sidecar](https://github.com/dhruv2003/sidecar) client-side from the
-GitHub API (`releases/latest`) and offers the macOS `.dmg` (Apple Silicon) and
-Windows `.exe` (x64) assets with live version, date, and file size — so the
-site always serves the newest build with no manual updates. If the API is
-unavailable (rate limit/offline), the buttons fall back to the latest-release
-page. All GitHub links on the site point to the main `dhruv2003/sidecar`
+POC" button. It offers the macOS `.dmg` (Apple Silicon) and Windows `.exe`
+(x64) builds of [dhruv2003/sidecar](https://github.com/dhruv2003/sidecar) and
+stays current automatically via three layers:
+
+1. **`latest-release.json`** (primary) — a snapshot in this repo, refreshed by
+   the `Update latest release info` workflow every 30 minutes and instantly
+   via `repository_dispatch` (type `sidecar-release`) if the app repo sends
+   one. Same-origin fetch, no rate limits.
+2. **Live GitHub API** (upgrade) — `releases/latest` is queried client-side;
+   when the visitor is not rate-limited it overrides the snapshot with the
+   absolute newest release.
+3. **Releases page** (fallback) — if neither source loads, the buttons link
+   to `github.com/dhruv2003/sidecar/releases/latest`.
+
+All GitHub links on the site point to the main `dhruv2003/sidecar`
 repository.
 
 ## Brand assets

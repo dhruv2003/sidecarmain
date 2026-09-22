@@ -1,0 +1,63 @@
+# OPTIONAL in-repo automation template.
+# To enable: move this file to .github/workflows/update-release.yml (push from
+# the GitHub web UI or an account whose token has the `workflow` scope).
+# Until then, the same sync is performed by an external scheduled job.
+
+name: Update latest release info
+
+# Keeps latest-release.json in sync with the newest GitHub release of the
+# main app repo (dhruv2003/sidecar) so download.html always offers current
+# builds. Runs on a schedule; the app repo can also ping this workflow via
+# repository_dispatch (type: sidecar-release) for instant updates.
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+  repository_dispatch:
+    types: [sidecar-release]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch latest release and write latest-release.json
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          gh api repos/dhruv2003/sidecar/releases/latest > /tmp/rel.json
+          python3 - <<'EOF'
+          import json
+
+          rel = json.load(open('/tmp/rel.json'))
+          assets = rel.get('assets', [])
+          mac = next((a for a in assets if a['name'].lower().endswith('.dmg')), None)
+          win = next((a for a in assets if a['name'].lower().endswith('.exe')), None)
+
+          def pick(a):
+              return {'name': a['name'], 'size': a['size'],
+                      'url': a['browser_download_url']} if a else None
+
+          out = {
+              'version': rel.get('tag_name') or rel.get('name'),
+              'published_at': rel.get('published_at'),
+              'release_page': rel.get('html_url'),
+              'mac': pick(mac),
+              'win': pick(win),
+          }
+          with open('latest-release.json', 'w') as f:
+              json.dump(out, f, indent=2)
+              f.write('\n')
+          EOF
+
+      - name: Commit and push if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update latest release info"
+          file_pattern: latest-release.json

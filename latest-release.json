@@ -1,0 +1,15 @@
+{
+  "version": "v1.4.2",
+  "published_at": "2026-09-22T11:27:40Z",
+  "release_page": "https://github.com/dhruv2003/sidecar/releases/tag/v1.4.2",
+  "mac": {
+    "name": "codex-cli-api_1.4.2_aarch64.dmg",
+    "size": 173604864,
+    "url": "https://github.com/dhruv2003/sidecar/releases/download/v1.4.2/codex-cli-api_1.4.2_aarch64.dmg"
+  },
+  "win": {
+    "name": "codex-cli-api_1.4.2_x64-setup.exe",
+    "size": 121274368,
+    "url": "https://github.com/dhruv2003/sidecar/releases/download/v1.4.2/codex-cli-api_1.4.2_x64-setup.exe"
+  }
+}

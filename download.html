@@ -385,36 +385,58 @@ tailwind.config = {
       return new Date(iso).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
     } catch (e) { return ''; }
   }
-  function fallback() {
-    document.getElementById('fallback-note').classList.remove('hidden');
-    versionLine.textContent = 'Latest release on GitHub';
-    btnMac.href = RELEASES_PAGE;
-    btnWin.href = RELEASES_PAGE;
+  var resolved = false;
+
+  function applyRelease(version, dateIso, mac, win) {
+    if (version) {
+      var date = fmtDate(dateIso);
+      versionLine.textContent = 'Latest: ' + version + (date ? ' • ' + date : '');
+    }
+    if (mac && mac.url) {
+      btnMac.href = mac.url;
+      document.getElementById('file-mac').textContent = mac.name || 'macOS disk image';
+      document.getElementById('size-mac').textContent = mac.size ? fmtSize(mac.size) : '';
+    }
+    if (win && win.url) {
+      btnWin.href = win.url;
+      document.getElementById('file-win').textContent = win.name || 'Windows installer';
+      document.getElementById('size-win').textContent = win.size ? fmtSize(win.size) : '';
+    }
+    if (version || (mac && mac.url) || (win && win.url)) resolved = true;
   }
 
-  fetch('https://api.github.com/repos/dhruv2003/sidecar/releases/latest', { headers: { 'Accept': 'application/vnd.github+json' } })
+  function maybeFallback() {
+    if (!resolved) {
+      document.getElementById('fallback-note').classList.remove('hidden');
+      versionLine.textContent = 'Latest release on GitHub';
+      btnMac.href = RELEASES_PAGE;
+      btnWin.href = RELEASES_PAGE;
+    }
+  }
+
+  // Source 1: baked snapshot committed by the update-release workflow
+  // (same origin, no rate limits, refreshed every 30 min / on dispatch).
+  var snapshot = fetch('latest-release.json', { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+    .then(function (d) { applyRelease(d.version, d.published_at, d.mac, d.win); });
+
+  // Source 2: live GitHub API — upgrades to the absolute newest release when
+  // the visitor is not rate-limited. Overrides the snapshot if fresher.
+  var live = fetch('https://api.github.com/repos/dhruv2003/sidecar/releases/latest', { headers: { 'Accept': 'application/vnd.github+json' } })
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(function (rel) {
-      var version = rel.tag_name || rel.name || '';
-      var date = fmtDate(rel.published_at);
-      versionLine.textContent = 'Latest: ' + version + (date ? ' • ' + date : '');
-
       var mac = (rel.assets || []).filter(function (a) { return /\.dmg$/i.test(a.name); })[0];
       var win = (rel.assets || []).filter(function (a) { return /\.exe$/i.test(a.name); })[0];
+      applyRelease(
+        rel.tag_name || rel.name,
+        rel.published_at,
+        mac && { name: mac.name, size: mac.size, url: mac.browser_download_url },
+        win && { name: win.name, size: win.size, url: win.browser_download_url }
+      );
+    });
 
-      if (mac) {
-        btnMac.href = mac.browser_download_url;
-        document.getElementById('file-mac').textContent = mac.name;
-        document.getElementById('size-mac').textContent = fmtSize(mac.size);
-      } else { btnMac.href = RELEASES_PAGE; }
-      if (win) {
-        btnWin.href = win.browser_download_url;
-        document.getElementById('file-win').textContent = win.name;
-        document.getElementById('size-win').textContent = fmtSize(win.size);
-      } else { btnWin.href = RELEASES_PAGE; }
-      if (!mac && !win) fallback();
-    })
-    .catch(fallback);
+  // Source 3: plain links to the releases page if neither worked.
+  Promise.allSettled([snapshot, live]).then(function () { maybeFallback(); });
 })();
 </script>
 
