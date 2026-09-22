@@ -34,6 +34,13 @@ python3 -m http.server 8080
 
 Then visit `http://localhost:8080`.
 
+## Brand assets
+
+The official Sidecar brand kit (symbols, wordmarks, lockups, app icons, and
+color tokens) lives in [`assets/brand/`](assets/brand/README.md). The header
+and footer swap symbol and wordmark variants automatically for light/dark
+themes. `assets/brand/og-image.png` is the social share card.
+
 ## Deploy
 
 The site is static and can be hosted anywhere (GitHub Pages, Vercel, Netlify).

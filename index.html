@@ -9,9 +9,14 @@
 <meta property="og:description" content="Validate the idea first. Scale what works. A local desktop gateway for fast, private AI proof-of-concepts.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://thesidecar.in">
+<meta property="og:image" content="https://dhruv2003.github.io/sidecarmain/assets/brand/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#fdf9ef" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0d0e12" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/brand/png/sidecar-icon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/brand/png/sidecar-icon-16.png">
+<link rel="apple-touch-icon" href="assets/brand/png/app-icon-blue-180.png">
 <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
 <link href="https://fonts.googleapis.com" rel="preconnect">
 <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
@@ -222,12 +227,12 @@ tailwind.config = {
 <!-- ================= HEADER ================= -->
 <header id="site-header" class="fixed top-0 left-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-surface-border">
   <div class="h-16 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-6">
-    <a href="#top" class="flex items-center gap-3 shrink-0" aria-label="Sidecar home">
-      <div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center shadow-sm text-white">
-        <span class="font-mono font-bold text-sm tracking-tighter">&gt;_</span>
-      </div>
+    <a href="#top" class="flex items-center gap-2.5 shrink-0" aria-label="Sidecar home">
+      <img src="assets/brand/svg/sidecar-symbol.svg" alt="Sidecar logo" class="h-8 w-auto dark:hidden">
+      <img src="assets/brand/svg/sidecar-symbol-white.svg" alt="Sidecar logo" class="h-8 w-auto hidden dark:block">
       <div class="flex items-center gap-2">
-        <span class="font-headline font-bold text-base tracking-tight text-on-surface">Sidecar</span>
+        <img src="assets/brand/png/wordmark-black-860x176.png" alt="Sidecar" class="h-[15px] w-auto dark:hidden">
+        <img src="assets/brand/png/wordmark-white-860x176.png" alt="Sidecar" class="h-[15px] w-auto hidden dark:block">
         <span class="text-xs text-on-surface-muted font-normal hidden sm:inline">• Your Local AI Companion</span>
       </div>
     </a>
@@ -347,7 +352,7 @@ tailwind.config = {
             <span class="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]/50"></span>
             <span class="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]/50"></span>
           </div>
-          <div class="w-5 h-5 rounded bg-primary-container text-white flex items-center justify-center text-[10px] font-mono font-bold shrink-0">&gt;_</div>
+          <img src="assets/brand/svg/sidecar-app-icon-blue.svg" alt="" class="w-5 h-5 rounded shrink-0">
           <span class="font-headline font-semibold text-xs text-on-surface whitespace-nowrap">Sidecar Desktop</span>
           <span class="text-xs text-on-surface-muted hidden sm:inline">•</span>
           <span class="font-mono text-[11px] text-on-surface-muted bg-surface-card px-2 py-0.5 rounded border border-surface-border truncate hidden sm:inline">127.0.0.1:3081 • Local gateway</span>
@@ -950,7 +955,8 @@ tailwind.config = {
   <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
     <div class="flex flex-col gap-2 text-xs text-on-surface-variant">
       <div class="flex items-center gap-2 font-medium text-on-surface">
-        <span class="w-2 h-2 rounded-full bg-primary-container inline-block"></span>
+        <img src="assets/brand/svg/sidecar-symbol.svg" alt="" class="h-4 w-auto dark:hidden">
+        <img src="assets/brand/svg/sidecar-symbol-white.svg" alt="" class="h-4 w-auto hidden dark:block">
         Sidecar — Your local AI companion
       </div>
       <span>thesidecar.in • Created by Dhruv · <a class="text-primary-accent hover:underline" href="https://thisisdhruv.in" rel="noreferrer" target="_blank">thisisdhruv.in</a></span>
