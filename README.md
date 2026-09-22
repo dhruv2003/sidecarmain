@@ -41,15 +41,23 @@ POC" button. It offers the macOS `.dmg` (Apple Silicon) and Windows `.exe`
 (x64) builds of [dhruv2003/sidecar](https://github.com/dhruv2003/sidecar) and
 stays current automatically via three layers:
 
-1. **`latest-release.json`** (primary) — a snapshot in this repo, refreshed by
-   the `Update latest release info` workflow every 30 minutes and instantly
-   via `repository_dispatch` (type `sidecar-release`) if the app repo sends
-   one. Same-origin fetch, no rate limits.
-2. **Live GitHub API** (upgrade) — `releases/latest` is queried client-side;
-   when the visitor is not rate-limited it overrides the snapshot with the
-   absolute newest release.
-3. **Releases page** (fallback) — if neither source loads, the buttons link
-   to `github.com/dhruv2003/sidecar/releases/latest`.
+1. **Live GitHub API** (primary) — `releases/latest` is queried client-side,
+   so visitors see the newest release the moment it is published.
+2. **`latest-release.json`** (fallback) — a same-origin snapshot in this repo
+   used when a visitor hits the API rate limit (shared IPs). Refresh it after
+   publishing a release with `./scripts/update-release.sh`, or enable the
+   optional Actions template below.
+3. **Releases page** (last resort) — if neither source loads, the buttons
+   link to `github.com/dhruv2003/sidecar/releases/latest`.
+
+### Keeping the snapshot fresh
+
+- **Manual:** run `./scripts/update-release.sh` after publishing a release.
+  It regenerates `latest-release.json`, commits, and pushes.
+- **Automatic (optional):** move `automation/update-release.yml` to
+  `.github/workflows/update-release.yml` (do it in the GitHub web UI: Add
+  file → paste the file contents). It refreshes the snapshot hourly and on
+  demand via the Actions tab.
 
 All GitHub links on the site point to the main `dhruv2003/sidecar`
 repository.
@@ -68,5 +76,5 @@ For GitHub Pages: Settings → Pages → deploy from the `main` branch root.
 
 ---
 
-[thesidecar.in](https://thesidecar.in) • Created by Dhruv —
+[sidecar.co.in](https://sidecar.co.in) • Created by Dhruv —
 [thisisdhruv.in](https://thisisdhruv.in)
