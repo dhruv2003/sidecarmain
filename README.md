@@ -34,6 +34,18 @@ python3 -m http.server 8080
 
 Then visit `http://localhost:8080`.
 
+## Download page
+
+`download.html` is linked from every "Download Sidecar" / "Try your first
+POC" button. It fetches the latest release of
+[dhruv2003/sidecar](https://github.com/dhruv2003/sidecar) client-side from the
+GitHub API (`releases/latest`) and offers the macOS `.dmg` (Apple Silicon) and
+Windows `.exe` (x64) assets with live version, date, and file size — so the
+site always serves the newest build with no manual updates. If the API is
+unavailable (rate limit/offline), the buttons fall back to the latest-release
+page. All GitHub links on the site point to the main `dhruv2003/sidecar`
+repository.
+
 ## Brand assets
 
 The official Sidecar brand kit (symbols, wordmarks, lockups, app icons, and
