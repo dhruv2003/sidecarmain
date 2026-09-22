@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Sidecar — Your Local AI Companion</title>
+<meta name="description" content="Sidecar is a local desktop gateway for Codex. Validate AI ideas in minutes — scoped keys, folder sandboxing, and real telemetry. Pay only for scale, not for POCs.">
+<meta property="og:title" content="Sidecar — Your Local AI Companion">
+<meta property="og:description" content="Validate the idea first. Scale what works. A local desktop gateway for fast, private AI proof-of-concepts.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://thesidecar.in">
+<meta name="theme-color" content="#fdf9ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0d0e12" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+// Apply saved theme before first paint to avoid a flash.
+(function () {
+  try {
+    var stored = localStorage.getItem('sidecar-theme');
+    if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  } catch (e) {}
+})();
+</script>
+<style>
+  :root {
+    --primary: #0037e4;
+    --primary-container: #3155ff;
+    --primary-hover: #002fc8;
+    --primary-accent: #3155ff;
+    --surface: #fdf9ef;
+    --surface-container: #f2eee3;
+    --surface-container-low: #f8f3e9;
+    --surface-container-high: #ece8de;
+    --surface-container-highest: #e6e2d8;
+    --surface-card: #ffffff;
+    --surface-card-subtle: #faf9f6;
+    --surface-border: #d8d5cc;
+    --surface-border-subtle: #e4e1d8;
+    --on-surface: #151515;
+    --on-surface-variant: #444656;
+    --on-surface-muted: #6b6961;
+    --status-success: #12805c;
+    --status-success-bg: #e8f7f0;
+    --status-warning: #b26400;
+    --status-warning-bg: #fff6e5;
+    --status-error: #ba1a1a;
+    --status-error-bg: #ffdad6;
+    --glow: rgba(49, 85, 255, 0.28);
+    --grid-line: rgba(21, 21, 21, 0.05);
+    --blob-a: rgba(49, 85, 255, 0.10);
+    --blob-b: rgba(18, 128, 92, 0.08);
+  }
+  .dark {
+    --primary: #4d6dff;
+    --primary-container: #4a68ff;
+    --primary-hover: #6780ff;
+    --primary-accent: #93a6ff;
+    --surface: #0d0e12;
+    --surface-container: #15171c;
+    --surface-container-low: #111318;
+    --surface-container-high: #1b1e24;
+    --surface-container-highest: #22252c;
+    --surface-card: #14161b;
+    --surface-card-subtle: #171a20;
+    --surface-border: #2a2e37;
+    --surface-border-subtle: #20242c;
+    --on-surface: #ecedf1;
+    --on-surface-variant: #b3b6c2;
+    --on-surface-muted: #83879a;
+    --status-success: #3ecf96;
+    --status-success-bg: rgba(62, 207, 150, 0.12);
+    --status-warning: #e5a13c;
+    --status-warning-bg: rgba(229, 161, 60, 0.12);
+    --status-error: #ff7a70;
+    --status-error-bg: rgba(255, 122, 112, 0.12);
+    --glow: rgba(93, 124, 255, 0.35);
+    --grid-line: rgba(236, 237, 241, 0.05);
+    --blob-a: rgba(74, 104, 255, 0.16);
+    --blob-b: rgba(62, 207, 150, 0.10);
+  }
+  @layer base {
+    html, body { margin: 0; padding: 0; }
+    body { overscroll-behavior: none; }
+    main > :first-child { margin-top: 0 !important; }
+    main > :last-child { margin-bottom: 0 !important; }
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--surface); }
+  ::-webkit-scrollbar-thumb { background: var(--surface-border); border-radius: 8px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--on-surface-muted); }
+
+  html { scroll-padding-top: 5.5rem; }
+  body { transition: background-color 0.3s ease, color 0.3s ease; }
+
+  .text-gradient {
+    background: linear-gradient(100deg, var(--primary-container) 0%, var(--primary-accent) 55%, #7b9cff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .dark .text-gradient {
+    background: linear-gradient(100deg, #6e86ff 0%, #93a6ff 55%, #b9c7ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .hero-backdrop {
+    position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+  }
+  .hero-backdrop::before {
+    content: ""; position: absolute; inset: 0;
+    background-image: radial-gradient(var(--grid-line) 1px, transparent 1px);
+    background-size: 26px 26px;
+    mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, black 30%, transparent 75%);
+  }
+  .hero-blob {
+    position: absolute; border-radius: 9999px; filter: blur(90px); opacity: 0.9;
+  }
+  .hero-blob-a { width: 34rem; height: 34rem; background: var(--blob-a); top: -12rem; left: -8rem; }
+  .hero-blob-b { width: 30rem; height: 30rem; background: var(--blob-b); top: -10rem; right: -6rem; }
+
+  /* Scroll-reveal */
+  .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1); }
+  .reveal.is-visible { opacity: 1; transform: none; }
+
+  /* Header state + nav */
+  #site-header { transition: box-shadow 0.25s ease, background-color 0.25s ease; }
+  #site-header.scrolled { box-shadow: 0 6px 24px -12px rgba(0, 0, 0, 0.18); }
+  .nav-link { position: relative; }
+  .nav-link.active { color: var(--on-surface); background: color-mix(in srgb, var(--surface-border) 45%, transparent); }
+
+  /* Blinking caret in the console payload */
+  .caret { display: inline-block; width: 7px; height: 13px; background: var(--primary-accent); vertical-align: -2px; animation: blink 1.05s steps(2, start) infinite; }
+  @keyframes blink { to { visibility: hidden; } }
+
+  /* Card hover lift */
+  .lift { transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
+  .lift:hover { transform: translateY(-3px); box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.28); }
+
+  /* Mobile menu */
+  #mobile-menu { transition: opacity 0.2s ease, transform 0.2s ease; }
+  #mobile-menu.closed { opacity: 0; transform: translateY(-6px); pointer-events: none; }
+
+  /* Back to top */
+  #to-top { transition: opacity 0.25s ease, transform 0.25s ease; }
+  #to-top.hidden-btn { opacity: 0; transform: translateY(8px); pointer-events: none; }
+
+  /* CTA glow ring */
+  .glow-wrap { position: relative; }
+  .glow-wrap::before {
+    content: ""; position: absolute; inset: -2px; border-radius: 1.05rem; z-index: 0;
+    background: linear-gradient(120deg, var(--primary-container), transparent 40%, var(--status-success) 90%);
+    opacity: 0.35; filter: blur(10px);
+  }
+
+  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+
+  :focus-visible { outline: 2px solid var(--primary-accent); outline-offset: 2px; border-radius: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .caret { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "primary": "var(--primary)",
+        "primary-container": "var(--primary-container)",
+        "primary-hover": "var(--primary-hover)",
+        "primary-accent": "var(--primary-accent)",
+        "on-primary": "#ffffff",
+        "surface": "var(--surface)",
+        "surface-container": "var(--surface-container)",
+        "surface-container-low": "var(--surface-container-low)",
+        "surface-container-high": "var(--surface-container-high)",
+        "surface-container-highest": "var(--surface-container-highest)",
+        "surface-card": "var(--surface-card)",
+        "surface-card-subtle": "var(--surface-card-subtle)",
+        "surface-border": "var(--surface-border)",
+        "surface-border-subtle": "var(--surface-border-subtle)",
+        "on-surface": "var(--on-surface)",
+        "on-surface-variant": "var(--on-surface-variant)",
+        "on-surface-muted": "var(--on-surface-muted)",
+        "status-success": "var(--status-success)",
+        "status-success-bg": "var(--status-success-bg)",
+        "status-warning": "var(--status-warning)",
+        "status-warning-bg": "var(--status-warning-bg)",
+        "status-error": "var(--status-error)",
+        "status-error-bg": "var(--status-error-bg)"
+      },
+      fontFamily: {
+        headline: ["Inter", "sans-serif"],
+        display: ["Inter", "sans-serif"],
+        body: ["Inter", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"]
+      },
+      borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" }
+    }
+  }
+}
+</script>
+</head>
+<body class="bg-surface font-body text-on-surface antialiased selection:bg-primary-container/15 selection:text-primary-accent">
+
+<!-- ================= HEADER ================= -->
+<header id="site-header" class="fixed top-0 left-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-surface-border">
+  <div class="h-16 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-6">
+    <a href="#top" class="flex items-center gap-3 shrink-0" aria-label="Sidecar home">
+      <div class="w-8 h-8 rounded-lg bg-primary-container flex items-center justify-center shadow-sm text-white">
+        <span class="font-mono font-bold text-sm tracking-tighter">&gt;_</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="font-headline font-bold text-base tracking-tight text-on-surface">Sidecar</span>
+        <span class="text-xs text-on-surface-muted font-normal hidden sm:inline">• Your Local AI Companion</span>
+      </div>
+    </a>
+    <nav class="hidden md:flex items-center gap-1" aria-label="Primary">
+      <a class="nav-link px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#features" data-nav="features">Features</a>
+      <a class="nav-link px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#how-it-works" data-nav="how-it-works">How it works</a>
+      <a class="nav-link px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#compatibility" data-nav="compatibility">Compatibility</a>
+      <a class="nav-link px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#privacy" data-nav="privacy">Privacy</a>
+      <a class="nav-link px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#planned-next" data-nav="planned-next">Roadmap</a>
+      <a class="px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors flex items-center gap-1" href="https://github.com/dhruv2003/sidecarmain" rel="noreferrer" target="_blank">GitHub <span class="material-symbols-outlined text-[13px] text-on-surface-muted">arrow_outward</span></a>
+    </nav>
+    <div class="flex items-center gap-2.5 shrink-0">
+      <button id="theme-toggle" type="button" aria-label="Toggle dark mode" class="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-surface-card border border-surface-border text-on-surface-muted hover:text-on-surface hover:bg-surface-card-subtle transition-colors">
+        <span class="material-symbols-outlined text-[18px] icon-sun hidden">light_mode</span>
+        <span class="material-symbols-outlined text-[18px] icon-moon">dark_mode</span>
+      </button>
+      <a class="hidden sm:inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-xs font-medium bg-surface-card border border-surface-border text-on-surface shadow-sm hover:bg-surface-card-subtle transition-colors" href="#download">Download Sidecar</a>
+      <a class="hidden xs:inline-flex sm:inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-xs font-medium bg-primary-container text-on-primary shadow-sm hover:bg-primary-hover transition-colors" href="#preview">Open dashboard</a>
+      <button id="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" class="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg bg-surface-card border border-surface-border text-on-surface transition-colors">
+        <span class="material-symbols-outlined text-[20px] icon-menu">menu</span>
+        <span class="material-symbols-outlined text-[20px] icon-close hidden">close</span>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="closed md:hidden absolute top-16 left-0 w-full bg-surface-card border-b border-surface-border shadow-lg">
+    <nav class="px-6 py-4 flex flex-col gap-1" aria-label="Mobile">
+      <a class="nav-link px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#features" data-nav="features">Features</a>
+      <a class="nav-link px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#how-it-works" data-nav="how-it-works">How it works</a>
+      <a class="nav-link px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#compatibility" data-nav="compatibility">Compatibility</a>
+      <a class="nav-link px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#privacy" data-nav="privacy">Privacy</a>
+      <a class="nav-link px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#planned-next" data-nav="planned-next">Roadmap</a>
+      <a class="px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors flex items-center gap-1.5" href="https://github.com/dhruv2003/sidecarmain" rel="noreferrer" target="_blank">GitHub <span class="material-symbols-outlined text-[14px]">arrow_outward</span></a>
+      <div class="pt-3 mt-2 border-t border-surface-border flex flex-col gap-2">
+        <a class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-medium bg-surface-card-subtle border border-surface-border text-on-surface" href="#download">Download Sidecar</a>
+        <a class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-medium bg-primary-container text-on-primary" href="#preview">Open dashboard</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main id="top" class="w-full pt-16 bg-surface min-h-screen">
+<div class="flex flex-col w-full">
+
+<!-- ================= HERO ================= -->
+<section class="relative max-w-7xl mx-auto px-6 lg:px-12 pt-14 pb-16 lg:pt-20 lg:pb-20 w-full">
+  <div class="hero-backdrop" aria-hidden="true">
+    <div class="hero-blob hero-blob-a"></div>
+    <div class="hero-blob hero-blob-b"></div>
+  </div>
+
+  <div class="relative flex flex-col items-center text-center max-w-3xl mx-auto">
+    <div class="reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-card border border-surface-border text-xs font-medium text-on-surface shadow-sm mb-6">
+      <span class="w-2 h-2 rounded-full bg-status-success"></span>
+      <span>Local validation • Local by default • Project-scoped access</span>
+    </div>
+
+    <h1 class="reveal text-4xl sm:text-5xl lg:text-6xl font-headline font-extrabold tracking-tight text-on-surface leading-[1.08]" style="transition-delay:60ms">
+      Pay only for <span class="text-gradient">scale</span>,<br class="hidden sm:block"> not for POCs.
+    </h1>
+    <p class="reveal mt-4 text-xl sm:text-2xl font-headline font-semibold text-primary-accent tracking-tight" style="transition-delay:120ms">
+      Validate the idea first. Scale what works.
+    </p>
+
+    <p class="reveal mt-5 text-sm sm:text-base text-on-surface-variant max-w-2xl font-normal leading-relaxed" style="transition-delay:180ms">
+      Designed for creators, founders, and small engineering teams: choose a project directory, connect your Codex account, run a small real test, inspect whether it worked and what it used, and decide whether the idea deserves production investment.
+    </p>
+    <p class="reveal mt-2 text-xs text-on-surface-muted max-w-xl" style="transition-delay:220ms">
+      Codex usage itself follows your personal Codex account quota; Sidecar eliminates the upfront cost, complexity, and risk of building surrounding infrastructure before you even know if the workflow is viable.
+    </p>
+
+    <div class="reveal mt-8 flex flex-col sm:flex-row items-center justify-center gap-3.5 w-full sm:w-auto" style="transition-delay:260ms">
+      <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-primary-container text-on-primary font-medium text-sm shadow-md hover:bg-primary-hover hover:shadow-lg transition-all" href="#download">
+        <span class="material-symbols-outlined text-[19px]">rocket_launch</span>
+        <span>Try your first POC</span>
+      </a>
+      <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-surface-card border border-surface-border text-on-surface font-medium text-sm hover:bg-surface-card-subtle transition-all shadow-sm" href="#how-it-works">
+        <span class="material-symbols-outlined text-[18px] text-on-surface-muted">science</span>
+        <span>See how validation works</span>
+      </a>
+    </div>
+
+    <p class="reveal mt-4 text-xs text-on-surface-muted" style="transition-delay:300ms">
+      Runs natively on macOS &amp; Windows • No local server configuration required
+    </p>
+
+    <!-- Stats strip -->
+    <div class="reveal mt-10 grid grid-cols-2 sm:grid-cols-4 gap-px rounded-xl overflow-hidden border border-surface-border bg-surface-border shadow-sm w-full max-w-2xl" style="transition-delay:340ms">
+      <div class="bg-surface-card px-4 py-4">
+        <p class="font-headline font-bold text-lg text-on-surface">&lt; 2 min</p>
+        <p class="text-[11px] text-on-surface-muted mt-0.5">to first HTTP 200</p>
+      </div>
+      <div class="bg-surface-card px-4 py-4">
+        <p class="font-headline font-bold text-lg text-on-surface">0 infra</p>
+        <p class="text-[11px] text-on-surface-muted mt-0.5">cloud footprint to start</p>
+      </div>
+      <div class="bg-surface-card px-4 py-4">
+        <p class="font-headline font-bold text-lg text-on-surface">4 steps</p>
+        <p class="text-[11px] text-on-surface-muted mt-0.5">from install to test</p>
+      </div>
+      <div class="bg-surface-card px-4 py-4">
+        <p class="font-headline font-bold text-lg text-on-surface">100% local</p>
+        <p class="text-[11px] text-on-surface-muted mt-0.5">gateway &amp; dashboard</p>
+      </div>
+    </div>
+  </div>
+  <!-- APP PREVIEW MOCKUP -->
+  <div class="reveal relative mt-14 max-w-4xl mx-auto w-full" id="preview" style="transition-delay:120ms">
+    <div class="glow-wrap rounded-2xl">
+    <div class="relative z-10 bg-surface-card rounded-2xl border border-surface-border shadow-xl overflow-hidden font-body text-left">
+
+      <!-- Window chrome -->
+      <div class="bg-surface-container-high px-5 py-3 border-b border-surface-border flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5 min-w-0">
+          <div class="flex items-center gap-1.5 mr-2 shrink-0">
+            <span class="w-3 h-3 rounded-full bg-[#FF5F56] border border-[#E0443E]/50"></span>
+            <span class="w-3 h-3 rounded-full bg-[#FFBD2E] border border-[#DEA123]/50"></span>
+            <span class="w-3 h-3 rounded-full bg-[#27C93F] border border-[#1AAB29]/50"></span>
+          </div>
+          <div class="w-5 h-5 rounded bg-primary-container text-white flex items-center justify-center text-[10px] font-mono font-bold shrink-0">&gt;_</div>
+          <span class="font-headline font-semibold text-xs text-on-surface whitespace-nowrap">Sidecar Desktop</span>
+          <span class="text-xs text-on-surface-muted hidden sm:inline">•</span>
+          <span class="font-mono text-[11px] text-on-surface-muted bg-surface-card px-2 py-0.5 rounded border border-surface-border truncate hidden sm:inline">127.0.0.1:3081 • Local gateway</span>
+        </div>
+        <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-status-success-bg text-status-success border border-status-success/20 shrink-0">
+          <span class="w-1.5 h-1.5 rounded-full bg-status-success animate-pulse"></span>
+          Daemon active
+        </span>
+      </div>
+
+      <!-- 4-step progress tracker -->
+      <div class="bg-surface-card-subtle px-6 py-3.5 border-b border-surface-border-subtle overflow-x-auto">
+        <div class="flex items-center justify-between min-w-[580px] gap-2 text-xs">
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-status-success text-white flex items-center justify-center text-[11px] font-bold">✓</span>
+            <div class="leading-tight">
+              <p class="font-semibold text-on-surface">1. Workspace</p>
+              <p class="text-[10px] text-on-surface-muted font-mono">~/Projects/client-portal</p>
+            </div>
+          </div>
+          <div class="h-0.5 w-6 bg-status-success"></div>
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-status-success text-white flex items-center justify-center text-[11px] font-bold">✓</span>
+            <div class="leading-tight">
+              <p class="font-semibold text-on-surface">2. Create key</p>
+              <p class="text-[10px] text-on-surface-muted font-mono">local-development</p>
+            </div>
+          </div>
+          <div class="h-0.5 w-6 bg-status-success"></div>
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-status-success text-white flex items-center justify-center text-[11px] font-bold">✓</span>
+            <div class="leading-tight">
+              <p class="font-semibold text-on-surface">3. Sign in</p>
+              <p class="text-[10px] text-on-surface-muted font-mono">Codex linked</p>
+            </div>
+          </div>
+          <div class="h-0.5 w-6 bg-primary-container"></div>
+          <div class="flex items-center gap-2">
+            <span class="w-5 h-5 rounded-full bg-primary-container text-white flex items-center justify-center text-[11px] font-bold shadow-[0_0_12px_var(--glow)]">4</span>
+            <div class="leading-tight">
+              <p class="font-semibold text-primary-accent">4. Test connection</p>
+              <p class="text-[10px] text-primary-accent font-mono">Ready to dispatch</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="p-6 sm:p-7 space-y-5">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div class="p-3 rounded-lg bg-surface-card-subtle border border-surface-border">
+            <p class="text-[11px] text-on-surface-muted font-medium">Project-Scoped Key</p>
+            <div class="flex items-center gap-1.5 mt-1">
+              <span class="font-mono text-xs font-semibold text-on-surface">local-development</span>
+              <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono font-medium bg-status-success-bg text-status-success">● ACTIVE</span>
+            </div>
+            <p class="text-[10px] text-on-surface-muted mt-1">60 req/min limit • Optional expiry</p>
+          </div>
+          <div class="p-3 rounded-lg bg-surface-card-subtle border border-surface-border">
+            <p class="text-[11px] text-on-surface-muted font-medium">Bound Workspace</p>
+            <div class="flex items-center gap-1 mt-1 text-xs font-mono text-on-surface font-medium truncate">
+              <span class="material-symbols-outlined text-[14px] text-primary-accent">folder</span>
+              ~/Projects/client-portal
+            </div>
+            <p class="text-[10px] text-status-success mt-1">Folder sandbox verified</p>
+          </div>
+          <div class="p-3 rounded-lg bg-surface-card-subtle border border-surface-border">
+            <p class="text-[11px] text-on-surface-muted font-medium">Codex Auth Session</p>
+            <div class="flex items-center gap-1.5 mt-1">
+              <span class="material-symbols-outlined text-[15px] text-status-success">verified_user</span>
+              <span class="text-xs font-semibold text-on-surface">Connected</span>
+            </div>
+            <p class="text-[10px] text-on-surface-muted mt-1">Direct upstream session</p>
+          </div>
+        </div>
+
+        <!-- Handshake console -->
+        <div class="rounded-xl border border-surface-border overflow-hidden">
+          <div class="bg-surface-container-low px-4 py-2.5 border-b border-surface-border flex items-center justify-between gap-3">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px] text-on-surface-muted">send</span>
+              <span class="font-headline font-semibold text-xs text-on-surface">Live Handshake Test</span>
+            </div>
+            <span class="font-mono text-[11px] text-on-surface-muted truncate">POST /v1/chat/completions</span>
+          </div>
+          <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-surface-card-subtle p-3.5 rounded-lg border border-surface-border font-mono text-xs">
+              <div class="flex items-center justify-between text-[11px] text-on-surface-muted pb-2 border-b border-surface-border-subtle mb-2">
+                <span>Payload</span>
+                <span class="text-[10px]">codex-mini (example)</span>
+              </div>
+              <pre class="text-[11px] text-on-surface overflow-x-auto whitespace-pre-wrap leading-relaxed">{
+  <span class="text-primary-accent">"model"</span>: <span class="text-status-success">"gpt-6-astra"</span>,
+  <span class="text-primary-accent">"messages"</span>: [
+    {
+      <span class="text-primary-accent">"role"</span>: <span class="text-status-success">"user"</span>,
+      <span class="text-primary-accent">"content"</span>: <span class="text-status-success">"Say hello"</span>
+    }
+  ]
+}<span class="caret" aria-hidden="true"></span></pre>
+            </div>
+            <div class="bg-status-success-bg/60 p-3.5 rounded-lg border border-status-success/30 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between pb-2 border-b border-status-success/20 mb-2">
+                  <div class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-status-success"></span>
+                    <span class="font-headline font-semibold text-xs text-status-success">Connection successful</span>
+                  </div>
+                  <span class="font-mono text-[11px] font-bold text-status-success bg-status-success-bg px-2 py-0.5 rounded">200 OK</span>
+                </div>
+                <div class="space-y-1 font-mono text-[11px] text-on-surface-variant">
+                  <div class="flex justify-between gap-3">
+                    <span>Latency (example):</span>
+                    <span class="font-semibold text-on-surface">~412ms</span>
+                  </div>
+                  <div class="flex justify-between gap-3">
+                    <span>Tokens used (example):</span>
+                    <span class="font-semibold text-on-surface">32 total (14 / 18)</span>
+                  </div>
+                  <div class="flex justify-between gap-3">
+                    <span>Auth Type:</span>
+                    <span class="text-on-surface">Bearer (local-development)</span>
+                  </div>
+                  <div class="flex justify-between gap-3">
+                    <span>Daemon port:</span>
+                    <span class="text-on-surface">3081 / loopback ok</span>
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3 pt-2.5 border-t border-status-success/20 text-[11px] text-status-success font-medium flex items-center gap-1">
+                <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                Codex accepted request &amp; returned valid completion
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-1 flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-on-surface-muted gap-2 border-t border-surface-border-subtle">
+          <span class="flex items-center gap-1.5 text-[11px]">
+            <span class="material-symbols-outlined text-[14px] text-status-success">shield</span>
+            The desktop gateway and dashboard run locally by default. Request history keeps metadata only.
+          </span>
+          <a class="text-primary-accent hover:underline font-medium inline-flex items-center gap-1 text-[11px]" href="#how-it-works">
+            Inspect full workflow <span class="material-symbols-outlined text-[12px]">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+<!-- ================= HOW IT WORKS ================= -->
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full" id="how-it-works">
+  <div class="reveal max-w-3xl mb-12">
+    <span class="text-xs font-headline font-bold text-primary-accent uppercase tracking-wider">Fast &amp; Frictionless Verification</span>
+    <h2 class="text-3xl sm:text-4xl font-headline font-bold text-on-surface tracking-tight mt-2">
+      See if it works <span class="text-gradient">before you scale it.</span>
+    </h2>
+    <p class="mt-3 text-sm sm:text-base text-on-surface-variant leading-relaxed">
+      Setting up a new AI workflow traditionally means provisioning complex cloud gateways, wiring webhooks, managing hosted secrets, and hoping nothing breaks. Sidecar gets you to a confirmed HTTP 200 in under two minutes with zero infra footprint.
+    </p>
+  </div>
+
+  <div class="relative">
+    <div class="hidden lg:block absolute top-[4.5rem] left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-primary-container/40 to-transparent" aria-hidden="true"></div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+
+      <div class="reveal lift relative bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-8 h-8 rounded-lg bg-surface-container font-mono font-bold text-xs text-on-surface flex items-center justify-center border border-surface-border">01</span>
+            <span class="text-[11px] font-mono text-status-success font-medium">Bound</span>
+          </div>
+          <h3 class="text-base font-headline font-bold text-on-surface">Choose workspace</h3>
+          <p class="mt-2 text-xs text-on-surface-variant leading-relaxed">
+            Point Sidecar to a specific directory like <code class="font-mono text-[11px] bg-surface-card-subtle px-1 py-0.5 rounded border border-surface-border">~/Projects/client-portal</code>. Bound processes stay restricted to this chosen path.
+          </p>
+          <div class="mt-4 p-2.5 rounded-lg bg-surface-card-subtle border border-surface-border font-mono text-[11px] text-on-surface truncate flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[14px] text-primary-accent">folder_open</span>
+            ~/Projects/client-portal
+          </div>
+        </div>
+        <span class="mt-5 text-[11px] text-on-surface-muted flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px] text-status-success">check</span> Full folder path sandbox
+        </span>
+      </div>
+
+      <div class="reveal lift relative bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between" style="transition-delay:80ms">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-8 h-8 rounded-lg bg-surface-container font-mono font-bold text-xs text-on-surface flex items-center justify-center border border-surface-border">02</span>
+            <span class="text-[11px] font-mono text-primary-accent font-medium">Scoped</span>
+          </div>
+          <h3 class="text-base font-headline font-bold text-on-surface">Create scoped key</h3>
+          <p class="mt-2 text-xs text-on-surface-variant leading-relaxed">
+            Create project-scoped API keys with rate limits and optional expiry. Keys are securely stored and verified on your local gateway.
+          </p>
+          <div class="mt-4 p-2.5 rounded-lg bg-surface-card-subtle border border-surface-border font-mono text-[11px] text-on-surface flex items-center justify-between gap-2">
+            <span class="truncate">sk-sidecar-dev-••••</span>
+            <span class="text-[10px] text-status-success font-semibold">Active</span>
+          </div>
+        </div>
+        <span class="mt-5 text-[11px] text-on-surface-muted flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px] text-status-success">check</span> Rate limits &amp; optional expiry
+        </span>
+      </div>
+
+      <div class="reveal lift relative bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between" style="transition-delay:160ms">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-8 h-8 rounded-lg bg-surface-container font-mono font-bold text-xs text-on-surface flex items-center justify-center border border-surface-border">03</span>
+            <span class="text-[11px] font-mono text-status-success font-medium">Verified</span>
+          </div>
+          <h3 class="text-base font-headline font-bold text-on-surface">Sign in to Codex</h3>
+          <p class="mt-2 text-xs text-on-surface-variant leading-relaxed">
+            Authenticate your personal Codex account on your machine. Requests dispatch upstream directly to Codex using your personal model entitlement.
+          </p>
+          <div class="mt-4 p-2.5 rounded-lg bg-surface-card-subtle border border-surface-border text-[11px] text-on-surface flex items-center gap-2">
+            <span class="material-symbols-outlined text-[15px] text-status-success">account_circle</span>
+            <span>Codex session linked</span>
+          </div>
+        </div>
+        <span class="mt-5 text-[11px] text-on-surface-muted flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px] text-status-success">check</span> Direct account session
+        </span>
+      </div>
+
+      <div class="reveal lift relative bg-surface-card p-6 rounded-2xl border-2 border-primary-container shadow-sm flex flex-col justify-between" style="transition-delay:240ms">
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <span class="w-8 h-8 rounded-lg bg-primary-container font-mono font-bold text-xs text-white flex items-center justify-center">04</span>
+            <span class="text-[11px] font-mono text-primary-accent font-semibold">Test</span>
+          </div>
+          <h3 class="text-base font-headline font-bold text-on-surface">One-click test</h3>
+          <p class="mt-2 text-xs text-on-surface-variant leading-relaxed">
+            Click "Test Connection" to fire an immediate test payload. Sidecar confirms local endpoint routing, upstream handshake, and 200 OK status.
+          </p>
+          <div class="mt-4 p-2.5 rounded-lg bg-status-success-bg/60 border border-status-success/30 font-mono text-[11px] text-status-success flex items-center justify-between gap-2">
+            <span>HTTP 200 OK</span>
+            <span class="font-bold">~412ms (example)</span>
+          </div>
+        </div>
+        <span class="mt-5 text-[11px] text-status-success font-medium flex items-center gap-1">
+          <span class="material-symbols-outlined text-[13px]">check_circle</span> Proven before code is written
+        </span>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full" id="features">
+  <div class="reveal bg-surface-card rounded-2xl border border-surface-border p-8 sm:p-12 shadow-sm">
+    <div class="max-w-2xl mb-10">
+      <span class="text-xs font-headline font-bold text-primary-accent uppercase tracking-wider">Know Before You Commit</span>
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold text-on-surface tracking-tight mt-2">
+        Understand cost, latency, and viability <span class="text-gradient">in real time.</span>
+      </h2>
+      <p class="mt-3 text-sm text-on-surface-variant leading-relaxed">
+        When proving an AI feature, the biggest unknowns are token usage, unexpected response latency, and cryptic local connection errors. Sidecar surfaces the exact telemetry you need to evaluate if an idea is ready for production.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <!-- Requests table -->
+      <div class="lg:col-span-7 bg-surface-card-subtle rounded-xl border border-surface-border overflow-hidden">
+        <div class="p-4 border-b border-surface-border bg-surface-container flex items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-on-surface-muted">list_alt</span>
+            <span class="font-headline font-semibold text-xs text-on-surface">Recent Requests</span>
+          </div>
+          <span class="font-mono text-[11px] text-on-surface-muted">Rate limit: 60 req/min</span>
+        </div>
+        <div class="divide-y divide-surface-border text-xs">
+          <div class="p-3.5 flex items-center justify-between gap-3 hover:bg-surface-card transition-colors">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-status-success-bg text-status-success border border-status-success/30 shrink-0">200 OK</span>
+              <div class="min-w-0">
+                <p class="font-medium text-on-surface truncate">IDE inline query</p>
+                <p class="text-[10px] font-mono text-on-surface-muted">Codex model (example) • 1 min ago</p>
+              </div>
+            </div>
+            <div class="text-right font-mono text-[11px] shrink-0">
+              <p class="text-on-surface font-medium">412ms (example)</p>
+              <p class="text-[10px] text-on-surface-muted">28 tokens (example)</p>
+            </div>
+          </div>
+          <div class="p-3.5 flex items-center justify-between gap-3 hover:bg-surface-card transition-colors">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-status-success-bg text-status-success border border-status-success/30 shrink-0">200 OK</span>
+              <div class="min-w-0">
+                <p class="font-medium text-on-surface truncate">Prototype test completion</p>
+                <p class="text-[10px] font-mono text-on-surface-muted">Selected model • 4 mins ago</p>
+              </div>
+            </div>
+            <div class="text-right font-mono text-[11px] shrink-0">
+              <p class="text-on-surface font-medium">1,240ms (example)</p>
+              <p class="text-[10px] text-on-surface-muted">542 tokens (example)</p>
+            </div>
+          </div>
+          <div class="p-3.5 flex items-center justify-between gap-3 bg-status-warning-bg/30 hover:bg-status-warning-bg/50 transition-colors">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-status-warning-bg text-status-warning border border-status-warning/40 shrink-0">429</span>
+              <div class="min-w-0">
+                <p class="font-medium text-on-surface truncate">Rapid script loop throttled</p>
+                <p class="text-[10px] text-status-warning">Safety bucket preserved quota</p>
+              </div>
+            </div>
+            <div class="text-right font-mono text-[11px] shrink-0">
+              <p class="text-on-surface font-medium">12ms (example)</p>
+              <p class="text-[10px] text-on-surface-muted">0 tokens billed</p>
+            </div>
+          </div>
+          <div class="p-3.5 flex items-center justify-between gap-3 hover:bg-surface-card transition-colors">
+            <div class="flex items-center gap-2.5 min-w-0">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-status-success-bg text-status-success border border-status-success/30 shrink-0">200 OK</span>
+              <div class="min-w-0">
+                <p class="font-medium text-on-surface truncate">Local connection verification</p>
+                <p class="text-[10px] font-mono text-on-surface-muted">handshake-ping • 14 mins ago</p>
+              </div>
+            </div>
+            <div class="text-right font-mono text-[11px] shrink-0">
+              <p class="text-on-surface font-medium">210ms (example)</p>
+              <p class="text-[10px] text-on-surface-muted">32 tokens (example)</p>
+            </div>
+          </div>
+        </div>
+        <div class="p-3 bg-surface-card border-t border-surface-border flex items-center justify-between gap-3 text-[11px] text-on-surface-muted">
+          <span>Volatile metadata only • Prompts never stored</span>
+          <span class="text-primary-accent font-medium">In-memory session</span>
+        </div>
+      </div>
+
+      <!-- Diagnostics -->
+      <div class="lg:col-span-5 bg-surface-card-subtle rounded-xl border border-surface-border p-5 flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-between gap-3 pb-3 border-b border-surface-border mb-4">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[18px] text-primary-accent">vital_signs</span>
+              <span class="font-headline font-semibold text-xs text-on-surface">System Diagnostics</span>
+            </div>
+            <span class="inline-flex items-center gap-1 text-[11px] text-status-success font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-status-success"></span> All checks passed
+            </span>
+          </div>
+          <div class="space-y-3 text-xs">
+            <div class="flex items-center justify-between gap-3 p-2 rounded-lg bg-surface-card border border-surface-border">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[15px] text-status-success">check_circle</span>
+                <span class="font-medium text-on-surface">Port Binding (3081)</span>
+              </div>
+              <span class="font-mono text-[11px] text-on-surface-muted">LISTENING</span>
+            </div>
+            <div class="flex items-center justify-between gap-3 p-2 rounded-lg bg-surface-card border border-surface-border">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[15px] text-status-success">check_circle</span>
+                <span class="font-medium text-on-surface">Workspace Access</span>
+              </div>
+              <span class="font-mono text-[11px] text-on-surface-muted">BOUND &amp; VERIFIED</span>
+            </div>
+            <div class="flex items-center justify-between gap-3 p-2 rounded-lg bg-surface-card border border-surface-border">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[15px] text-status-success">check_circle</span>
+                <span class="font-medium text-on-surface">Codex Authentication</span>
+              </div>
+              <span class="font-mono text-[11px] text-on-surface-muted">AUTHENTICATED</span>
+            </div>
+            <div class="flex items-center justify-between gap-3 p-2 rounded-lg bg-surface-card border border-surface-border">
+              <div class="flex items-center gap-2">
+                <span class="material-symbols-outlined text-[15px] text-status-success">check_circle</span>
+                <span class="font-medium text-on-surface">Local Safe Key State</span>
+              </div>
+              <span class="font-mono text-[11px] text-status-success">ACTIVE &amp; ENFORCED</span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-6 pt-4 border-t border-surface-border text-xs text-on-surface-variant">
+          <p class="font-medium text-on-surface mb-1">Plain English Diagnosis</p>
+          <p class="text-[11px] text-on-surface-muted leading-relaxed">
+            If a local port conflict occurs, your key expires, or upstream auth needs renewal, Sidecar identifies the root cause and provides a clear resolution path.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!-- ================= COMPATIBILITY ================= -->
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full" id="compatibility">
+  <div class="reveal max-w-2xl mb-12">
+    <span class="text-xs font-headline font-bold text-primary-accent uppercase tracking-wider">Zero Lock-in Integration</span>
+    <h2 class="text-3xl sm:text-4xl font-headline font-bold text-on-surface tracking-tight mt-2">
+      Use it <span class="text-gradient">where you already work.</span>
+    </h2>
+    <p class="mt-3 text-sm text-on-surface-variant">
+      Sidecar acts as an OpenAI-compatible local API endpoint. Connect your existing editors, scripts, or prototype frontends to validate ideas rapidly.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+    <div class="reveal lift bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between">
+      <div>
+        <div class="w-9 h-9 rounded-lg bg-primary-container/10 text-primary-accent flex items-center justify-center font-bold text-sm mb-4">
+          <span class="material-symbols-outlined text-[20px]">code</span>
+        </div>
+        <h3 class="text-base font-headline font-bold text-on-surface">VS Code</h3>
+        <p class="mt-2 text-xs text-on-surface-variant leading-relaxed">
+          Configure your standard AI extension to point directly to Sidecar's local endpoint for interactive chat and completion testing.
+        </p>
+      </div>
+      <div class="mt-4 pt-3 border-t border-surface-border flex items-center justify-between gap-2">
+        <code class="font-mono text-[10px] text-on-surface-muted truncate">http://127.0.0.1:3081/v1/chat/completions</code>
+        <button type="button" class="copy-btn shrink-0 inline-flex items-center justify-center w-6 h-6 rounded text-on-surface-muted hover:text-primary-accent hover:bg-surface-border/40 transition-colors" data-copy="http://127.0.0.1:3081/v1/chat/completions" aria-label="Copy endpoint URL">
+          <span class="material-symbols-outlined text-[14px]">content_copy</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="reveal lift bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between" style="transition-delay:80ms">
+      <div>
+        <div class="w-9 h-9 rounded-lg bg-primary-container/10 text-primary-accent flex items-center justify-center font-bold text-sm mb-4">
+          <span class="material-symbols-outlined text-[20px]">terminal</span>
+        </div>
+        <h3 class="text-base font-headline font-bold text-on-surface">Cursor &amp; Cline</h3>
+        <p class="mt-2 text-xs text-on-surface-variant leading-relaxed">
+          Use standard OpenAI-compatible API base URL and your scoped safe key for seamless inline editor queries and suggestions.
+        </p>
+      </div>
+      <div class="mt-4 pt-3 border-t border-surface-border font-mono text-[10px] text-on-surface-muted">
+        Bearer key authentication
+      </div>
+    </div>
+
+    <div class="reveal lift bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between" style="transition-delay:160ms">
+      <div>
+        <div class="w-9 h-9 rounded-lg bg-primary-container/10 text-primary-accent flex items-center justify-center font-bold text-sm mb-4">
+          <span class="material-symbols-outlined text-[20px]">web</span>
+        </div>
+        <h3 class="text-base font-headline font-bold text-on-surface">Browser Prototypes</h3>
+        <p class="mt-2 text-xs text-on-surface-variant leading-relaxed">
+          Test client-side JavaScript experiments against local AI streaming without exposing upstream credentials in browser devtools.
+        </p>
+      </div>
+      <div class="mt-4 pt-3 border-t border-surface-border font-mono text-[10px] text-on-surface-muted">
+        Origin-checked local access
+      </div>
+    </div>
+
+    <div class="reveal lift bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between" style="transition-delay:240ms">
+      <div>
+        <div class="w-9 h-9 rounded-lg bg-primary-container/10 text-primary-accent flex items-center justify-center font-bold text-sm mb-4">
+          <span class="material-symbols-outlined text-[20px]">bolt</span>
+        </div>
+        <h3 class="text-base font-headline font-bold text-on-surface">cURL &amp; Scripts</h3>
+        <p class="mt-2 text-xs text-on-surface-variant leading-relaxed">
+          Run deterministic test scripts or benchmarks locally before building any complex deployment pipelines.
+        </p>
+      </div>
+      <div class="mt-4 pt-3 border-t border-surface-border flex items-center justify-between gap-2">
+        <code class="font-mono text-[10px] text-on-surface-muted truncate">curl http://127.0.0.1:3081/v1/models</code>
+        <button type="button" class="copy-btn shrink-0 inline-flex items-center justify-center w-6 h-6 rounded text-on-surface-muted hover:text-primary-accent hover:bg-surface-border/40 transition-colors" data-copy="curl http://127.0.0.1:3081/v1/models" aria-label="Copy curl command">
+          <span class="material-symbols-outlined text-[14px]">content_copy</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="reveal mt-6 p-4 rounded-xl bg-surface-card-subtle border border-surface-border flex items-start gap-3 text-xs text-on-surface-variant">
+    <span class="material-symbols-outlined text-[18px] text-primary-accent shrink-0 mt-0.5">info</span>
+    <div>
+      <span class="font-semibold text-on-surface">Current Scope Note: </span>
+      Sidecar is optimized for standard OpenAI-compatible text completions and chat streaming. Client tool calls, VS Code Agent mode, and standard image uploads are not supported yet.
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRIVACY ================= -->
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full" id="privacy">
+  <div class="reveal bg-surface-card rounded-2xl border border-surface-border p-8 sm:p-12 shadow-sm">
+    <div class="max-w-2xl mb-10">
+      <span class="text-xs font-headline font-bold text-status-success uppercase tracking-wider">Local &amp; Sovereign</span>
+      <h2 class="text-2xl sm:text-3xl lg:text-4xl font-headline font-bold text-on-surface tracking-tight mt-2">
+        Private by default.
+      </h2>
+      <p class="mt-3 text-sm text-on-surface-variant leading-relaxed">
+        When evaluating early ideas, you should never have to compromise confidentiality or send unvetted workspace data through unfamiliar third-party proxies.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="lift p-5 rounded-xl bg-surface-card-subtle border border-surface-border">
+        <div class="w-8 h-8 rounded-lg bg-surface-card border border-surface-border flex items-center justify-center text-primary-accent mb-3">
+          <span class="material-symbols-outlined text-[18px]">computer</span>
+        </div>
+        <h3 class="font-headline font-bold text-sm text-on-surface">Runs on your computer</h3>
+        <p class="mt-2 text-xs text-on-surface-variant leading-relaxed">
+          The desktop gateway and dashboard run locally on your computer by default. Traffic dispatches upstream straight to Codex.
+        </p>
+      </div>
+      <div class="lift p-5 rounded-xl bg-surface-card-subtle border border-surface-border">
+        <div class="w-8 h-8 rounded-lg bg-surface-card border border-surface-border flex items-center justify-center text-primary-accent mb-3">
+          <span class="material-symbols-outlined text-[18px]">folder_limited</span>
+        </div>
+        <h3 class="font-headline font-bold text-sm text-on-surface">Strict folder boundaries</h3>
+        <p class="mt-2 text-xs text-on-surface-variant leading-relaxed">
+          Authorized tools are confined strictly to your chosen project workspace. Your personal files and system paths remain unreachable.
+        </p>
+      </div>
+      <div class="lift p-5 rounded-xl bg-surface-card-subtle border border-surface-border">
+        <div class="w-8 h-8 rounded-lg bg-surface-card border border-surface-border flex items-center justify-center text-primary-accent mb-3">
+          <span class="material-symbols-outlined text-[18px]">key_vertical</span>
+        </div>
+        <h3 class="font-headline font-bold text-sm text-on-surface">Project-scoped keys</h3>
+        <p class="mt-2 text-xs text-on-surface-variant leading-relaxed">
+          Project-scoped API keys with rate limits and optional expiry. Keys are securely stored and verified on your local gateway.
+        </p>
+      </div>
+      <div class="lift p-5 rounded-xl bg-surface-card-subtle border border-surface-border">
+        <div class="w-8 h-8 rounded-lg bg-surface-card border border-surface-border flex items-center justify-center text-status-success mb-3">
+          <span class="material-symbols-outlined text-[18px]">memory</span>
+        </div>
+        <h3 class="font-headline font-bold text-sm text-on-surface">In-memory metadata only</h3>
+        <p class="mt-2 text-xs text-on-surface-variant leading-relaxed">
+          Request history stores volatile metadata only (timestamp, model, status, latency, token count) in local memory and never stores prompts, completions, or credentials.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ROADMAP ================= -->
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-12 w-full" id="planned-next">
+  <div class="reveal bg-surface-card-subtle rounded-2xl border border-surface-border p-6 sm:p-8">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold tracking-wider uppercase bg-surface-border text-on-surface-muted mb-1.5">
+          PLANNED, NOT AVAILABLE YET
+        </span>
+        <h3 class="font-headline font-bold text-xl text-on-surface">On our roadmap</h3>
+      </div>
+      <p class="text-xs text-on-surface-muted max-w-sm">Upcoming features focused on making local AI validation even more frictionless.</p>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="lift p-4 rounded-xl bg-surface-card border border-surface-border">
+        <p class="font-headline font-semibold text-xs text-on-surface">Broader provider adapters</p>
+        <p class="mt-1 text-[11px] text-on-surface-variant">Connecting additional AI accounts with the same local boundary safeguards.</p>
+      </div>
+      <div class="lift p-4 rounded-xl bg-surface-card border border-surface-border">
+        <p class="font-headline font-semibold text-xs text-on-surface">Standalone background daemon</p>
+        <p class="mt-1 text-[11px] text-on-surface-variant">Quiet background operation that activates whenever your IDE queries the local port.</p>
+      </div>
+      <div class="lift p-4 rounded-xl bg-surface-card border border-surface-border">
+        <p class="font-headline font-semibold text-xs text-on-surface">One-line automated installers</p>
+        <p class="mt-1 text-[11px] text-on-surface-variant">Streamlined single-command installer packages for immediate desktop onboarding.</p>
+      </div>
+      <div class="lift p-4 rounded-xl bg-surface-card border border-surface-border">
+        <p class="font-headline font-semibold text-xs text-on-surface">Deeper IDE extensions</p>
+        <p class="mt-1 text-[11px] text-on-surface-variant">Direct one-click connection extensions for auto-configuring editor base URLs.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full" id="download">
+  <div class="reveal glow-wrap">
+    <div class="relative z-10 bg-surface-card p-8 sm:p-14 rounded-2xl border border-surface-border shadow-md overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8">
+      <div class="hero-backdrop" aria-hidden="true">
+        <div class="hero-blob hero-blob-a" style="top:-14rem; left:auto; right:-10rem;"></div>
+      </div>
+      <div class="relative max-w-xl">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-status-success-bg text-status-success text-xs font-semibold mb-4">
+          <span class="w-1.5 h-1.5 rounded-full bg-status-success"></span>
+          <span>Local companion for fast AI validation</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-headline font-bold text-on-surface tracking-tight">
+          Ready to validate your AI idea without infra overhead?
+        </h2>
+        <p class="mt-3 text-sm text-on-surface-variant leading-relaxed">
+          Download Sidecar for macOS &amp; Windows, connect your Codex account, and test your first proof of concept locally today.
+        </p>
+      </div>
+      <div class="relative flex flex-col sm:flex-row items-center gap-3 w-full lg:w-auto shrink-0">
+        <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-primary-container text-on-primary font-medium text-sm shadow-md hover:bg-primary-hover transition-all" href="#">
+          <span class="material-symbols-outlined text-[19px]">rocket_launch</span>
+          <span>Try your first POC</span>
+        </a>
+        <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg bg-surface-card-subtle border border-surface-border text-on-surface font-medium text-sm hover:bg-surface-border/40 transition-all" href="#preview">
+          <span>View live test</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div></main>
+
+<!-- ================= FOOTER ================= -->
+<footer class="w-full bg-surface-card border-t border-surface-border py-12">
+  <div class="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+    <div class="flex flex-col gap-2 text-xs text-on-surface-variant">
+      <div class="flex items-center gap-2 font-medium text-on-surface">
+        <span class="w-2 h-2 rounded-full bg-primary-container inline-block"></span>
+        Sidecar — Your local AI companion
+      </div>
+      <span>thesidecar.in • Created by Dhruv · <a class="text-primary-accent hover:underline" href="https://thisisdhruv.in" rel="noreferrer" target="_blank">thisisdhruv.in</a></span>
+      <span class="text-on-surface-muted italic">Local gateway &amp; dashboard by default • Metadata-only history</span>
+    </div>
+    <nav class="flex flex-col gap-2 text-xs text-on-surface-variant font-medium" aria-label="Footer">
+      <p class="text-on-surface font-semibold text-xs mb-1">Product</p>
+      <a class="hover:text-on-surface transition-colors" href="#features">Features</a>
+      <a class="hover:text-on-surface transition-colors" href="#how-it-works">How it works</a>
+      <a class="hover:text-on-surface transition-colors" href="#compatibility">Compatibility</a>
+      <a class="hover:text-on-surface transition-colors" href="#privacy">Privacy</a>
+      <a class="hover:text-on-surface transition-colors" href="#planned-next">Roadmap</a>
+    </nav>
+    <div class="flex flex-col gap-2 text-xs text-on-surface-variant font-medium md:items-end">
+      <a class="hover:text-on-surface transition-colors inline-flex items-center gap-1.5" href="https://github.com/dhruv2003/sidecarmain" rel="noreferrer" target="_blank">
+        <span class="material-symbols-outlined text-[14px]">code</span> GitHub
+      </a>
+      <span class="text-on-surface-muted">© <span id="year">2026</span> Sidecar. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to top -->
+<button id="to-top" type="button" aria-label="Back to top" class="hidden-btn fixed bottom-6 right-6 z-40 w-10 h-10 rounded-full bg-surface-card border border-surface-border shadow-lg text-on-surface-muted hover:text-on-surface hover:bg-surface-card-subtle flex items-center justify-center">
+  <span class="material-symbols-outlined text-[18px]">arrow_upward</span>
+</button>
+
+<script>
+(function () {
+  var root = document.documentElement;
+
+  // ---- Theme toggle ----
+  var themeBtn = document.getElementById('theme-toggle');
+  function syncThemeIcon() {
+    var dark = root.classList.contains('dark');
+    themeBtn.querySelector('.icon-sun').classList.toggle('hidden', !dark);
+    themeBtn.querySelector('.icon-moon').classList.toggle('hidden', dark);
+    themeBtn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
+  }
+  themeBtn.addEventListener('click', function () {
+    var dark = root.classList.toggle('dark');
+    try { localStorage.setItem('sidecar-theme', dark ? 'dark' : 'light'); } catch (e) {}
+    syncThemeIcon();
+  });
+  syncThemeIcon();
+
+  // ---- Mobile menu ----
+  var menuBtn = document.getElementById('menu-toggle');
+  var mobileMenu = document.getElementById('mobile-menu');
+  function setMenu(open) {
+    mobileMenu.classList.toggle('closed', !open);
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    menuBtn.querySelector('.icon-menu').classList.toggle('hidden', open);
+    menuBtn.querySelector('.icon-close').classList.toggle('hidden', !open);
+  }
+  menuBtn.addEventListener('click', function () {
+    setMenu(mobileMenu.classList.contains('closed'));
+  });
+  mobileMenu.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () { setMenu(false); });
+  });
+
+  // ---- Header shadow on scroll ----
+  var header = document.getElementById('site-header');
+  function onScroll() {
+    header.classList.toggle('scrolled', window.scrollY > 8);
+    toTop.classList.toggle('hidden-btn', window.scrollY < 600);
+  }
+
+  // ---- Back to top ----
+  var toTop = document.getElementById('to-top');
+  toTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ---- Scroll-reveal ----
+  var revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+  }
+
+  // ---- Scrollspy ----
+  var navLinks = document.querySelectorAll('.nav-link[data-nav]');
+  var sections = {};
+  navLinks.forEach(function (link) {
+    var sec = document.getElementById(link.getAttribute('data-nav'));
+    if (sec) sections[link.getAttribute('data-nav')] = sec;
+  });
+  if ('IntersectionObserver' in window) {
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          navLinks.forEach(function (link) {
+            link.classList.toggle('active', link.getAttribute('data-nav') === entry.target.id);
+          });
+        }
+      });
+    }, { rootMargin: '-35% 0px -55% 0px' });
+    Object.keys(sections).forEach(function (id) { spy.observe(sections[id]); });
+  }
+
+  // ---- Copy to clipboard ----
+  document.querySelectorAll('.copy-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.getAttribute('data-copy');
+      var icon = btn.querySelector('.material-symbols-outlined');
+      function done() {
+        icon.textContent = 'check';
+        btn.classList.add('text-status-success');
+        setTimeout(function () {
+          icon.textContent = 'content_copy';
+          btn.classList.remove('text-status-success');
+        }, 1400);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done).catch(done);
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select();
+        try { document.execCommand('copy'); } catch (e) {}
+        document.body.removeChild(ta); done();
+      }
+    });
+  });
+
+  // ---- Footer year ----
+  document.getElementById('year').textContent = new Date().getFullYear();
+})();
+</script>
+
+</body>
+</html>
