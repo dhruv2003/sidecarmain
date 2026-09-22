@@ -361,12 +361,18 @@ tailwind.config = {
   var ua = navigator.userAgent || '';
   var isMac = /Macintosh|Mac OS X/.test(ua) && !/iPhone|iPad/.test(ua);
   var isWin = /Windows/.test(ua);
+  var PRIMARY_BTN = 'mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-primary-container text-on-primary font-medium text-sm shadow-md hover:bg-primary-hover transition-all';
+  var SECONDARY_BTN = 'mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-surface-card-subtle border border-surface-border text-on-surface font-medium text-sm hover:bg-surface-border/40 transition-all';
+  var btnMacEl = document.getElementById('btn-mac');
+  var btnWinEl = document.getElementById('btn-win');
   if (isMac) {
     document.getElementById('badge-mac').classList.remove('hidden');
     document.getElementById('card-mac').classList.add('card-recommended');
   } else if (isWin) {
     document.getElementById('badge-win').classList.remove('hidden');
     document.getElementById('card-win').classList.add('card-recommended');
+    btnMacEl.className = SECONDARY_BTN;
+    btnWinEl.className = PRIMARY_BTN;
   }
 
   // ---- Latest release lookup ----
