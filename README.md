@@ -44,9 +44,10 @@ stays current automatically via three layers:
 1. **Live GitHub API** (primary) — `releases/latest` is queried client-side,
    so visitors see the newest release the moment it is published.
 2. **`latest-release.json`** (fallback) — a same-origin snapshot in this repo
-   used when a visitor hits the API rate limit (shared IPs). Refresh it after
-   publishing a release with `./scripts/update-release.sh`, or enable the
-   optional Actions template below.
+   used when a visitor hits the API rate limit (shared IPs). It also carries a
+   `title` + `notes` summary that powers the "What's new" panel on the download
+   page. Refresh it after publishing a release with
+   `./scripts/update-release.sh`, or enable the optional Actions template below.
 3. **Releases page** (last resort) — if neither source loads, the buttons
    link to `github.com/dhruv2003/sidecar/releases/latest`.
 
@@ -72,6 +73,10 @@ themes. `assets/brand/og-image.png` is the social share card.
 ## Deploy
 
 The site is static and can be hosted anywhere (GitHub Pages, Vercel, Netlify).
+`vercel.json` adds cache headers for CSS/asset files, offline-first caching via
+`sw.js` (precache + stale-while-revalidate), and hardening response headers.
+Note: GitHub Pages serves `sw.js` but ignores `vercel.json`; Vercel honours
+both.
 For GitHub Pages: Settings → Pages → deploy from the `main` branch root.
 
 ---

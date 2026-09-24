@@ -1,0 +1,13 @@
+{
+  "name": "sidecarmain",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Sidecar landing page (static, prebuilt Tailwind CSS)",
+  "scripts": {
+    "build": "tailwindcss -i ./src/input.css -o ./css/site.css --minify",
+    "build:watch": "tailwindcss -i ./src/input.css -o ./css/site.css --watch"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.17"
+  }
+}

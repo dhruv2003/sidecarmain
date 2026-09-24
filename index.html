@@ -32,210 +32,17 @@
   } catch (e) {}
 })();
 </script>
-<style>
-  :root {
-    --primary: #0037e4;
-    --primary-container: #3155ff;
-    --primary-hover: #002fc8;
-    --primary-accent: #3155ff;
-    --surface: #fdf9ef;
-    --surface-container: #f2eee3;
-    --surface-container-low: #f8f3e9;
-    --surface-container-high: #ece8de;
-    --surface-container-highest: #e6e2d8;
-    --surface-card: #ffffff;
-    --surface-card-subtle: #faf9f6;
-    --surface-border: #d8d5cc;
-    --surface-border-subtle: #e4e1d8;
-    --on-surface: #151515;
-    --on-surface-variant: #444656;
-    --on-surface-muted: #6b6961;
-    --status-success: #12805c;
-    --status-success-bg: #e8f7f0;
-    --status-warning: #b26400;
-    --status-warning-bg: #fff6e5;
-    --status-error: #ba1a1a;
-    --status-error-bg: #ffdad6;
-    --glow: rgba(49, 85, 255, 0.28);
-    --grid-line: rgba(21, 21, 21, 0.05);
-    --blob-a: rgba(49, 85, 255, 0.10);
-    --blob-b: rgba(18, 128, 92, 0.08);
-  }
-  .dark {
-    --primary: #4d6dff;
-    --primary-container: #4a68ff;
-    --primary-hover: #6780ff;
-    --primary-accent: #93a6ff;
-    --surface: #0d0e12;
-    --surface-container: #15171c;
-    --surface-container-low: #111318;
-    --surface-container-high: #1b1e24;
-    --surface-container-highest: #22252c;
-    --surface-card: #14161b;
-    --surface-card-subtle: #171a20;
-    --surface-border: #2a2e37;
-    --surface-border-subtle: #20242c;
-    --on-surface: #ecedf1;
-    --on-surface-variant: #b3b6c2;
-    --on-surface-muted: #83879a;
-    --status-success: #3ecf96;
-    --status-success-bg: rgba(62, 207, 150, 0.12);
-    --status-warning: #e5a13c;
-    --status-warning-bg: rgba(229, 161, 60, 0.12);
-    --status-error: #ff7a70;
-    --status-error-bg: rgba(255, 122, 112, 0.12);
-    --glow: rgba(93, 124, 255, 0.35);
-    --grid-line: rgba(236, 237, 241, 0.04);
-    --blob-a: rgba(74, 104, 255, 0.09);
-    --blob-b: rgba(62, 207, 150, 0.06);
-  }
-  @layer base {
-    html, body { margin: 0; padding: 0; }
-    body { overscroll-behavior: none; }
-    main > :first-child { margin-top: 0 !important; }
-    main > :last-child { margin-bottom: 0 !important; }
-  }
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-track { background: var(--surface); }
-  ::-webkit-scrollbar-thumb { background: var(--surface-border); border-radius: 8px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--on-surface-muted); }
-
-  html { scroll-padding-top: 5.5rem; }
-  body { transition: background-color 0.3s ease, color 0.3s ease; }
-
-  .text-gradient {
-    background: linear-gradient(100deg, var(--primary-container) 0%, var(--primary-accent) 55%, #7b9cff 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .dark .text-gradient {
-    background: linear-gradient(100deg, #6e86ff 0%, #93a6ff 55%, #b9c7ff 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-  }
-
-  /* Full-bleed hero backdrop: spans the whole viewport width and bleeds under the fixed header. */
-  .hero-backdrop {
-    position: absolute; top: -4rem; left: 0; right: 0; bottom: 0; overflow: hidden; pointer-events: none;
-  }
-  .hero-backdrop::before {
-    content: ""; position: absolute; inset: 0;
-    background-image: radial-gradient(var(--grid-line) 1px, transparent 1px);
-    background-size: 26px 26px;
-    /* Fade vertically from the top AND horizontally at the screen edges — no hard column edges. */
-    mask-image:
-      radial-gradient(ellipse 85% 65% at 50% 0%, black 25%, transparent 72%),
-      linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-    mask-composite: intersect;
-    -webkit-mask-image:
-      radial-gradient(ellipse 85% 65% at 50% 0%, black 25%, transparent 72%),
-      linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-    -webkit-mask-composite: source-in;
-  }
-  /* Colored glow blobs only fit the dark palette; light mode keeps the clean paper look. */
-  .hero-blob {
-    position: absolute; border-radius: 9999px; filter: blur(110px); opacity: 0.75;
-    display: none;
-  }
-  .dark .hero-blob { display: block; }
-  .hero-blob-a { width: 46rem; height: 46rem; background: var(--blob-a); top: -18rem; left: -14rem; }
-  .hero-blob-b { width: 42rem; height: 42rem; background: var(--blob-b); top: -16rem; right: -12rem; }
-
-  /* Scroll-reveal */
-  .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1); }
-  .reveal.is-visible { opacity: 1; transform: none; }
-
-  /* Header state + nav */
-  #site-header { transition: box-shadow 0.25s ease, background-color 0.25s ease; }
-  #site-header.scrolled { box-shadow: 0 6px 24px -12px rgba(0, 0, 0, 0.18); }
-  .nav-link { position: relative; }
-  .nav-link.active { color: var(--on-surface); background: color-mix(in srgb, var(--surface-border) 45%, transparent); }
-
-  /* Blinking caret in the console payload */
-  .caret { display: inline-block; width: 7px; height: 13px; background: var(--primary-accent); vertical-align: -2px; animation: blink 1.05s steps(2, start) infinite; }
-  @keyframes blink { to { visibility: hidden; } }
-
-  /* Card hover lift */
-  .lift { transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
-  .lift:hover { transform: translateY(-3px); box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.28); }
-
-  /* Mobile menu */
-  #mobile-menu { transition: opacity 0.2s ease, transform 0.2s ease; }
-  #mobile-menu.closed { opacity: 0; transform: translateY(-6px); pointer-events: none; }
-
-  /* Back to top */
-  #to-top { transition: opacity 0.25s ease, transform 0.25s ease; }
-  #to-top.hidden-btn { opacity: 0; transform: translateY(8px); pointer-events: none; }
-
-  /* CTA glow ring */
-  .glow-wrap { position: relative; }
-  .glow-wrap::before {
-    content: ""; position: absolute; inset: -2px; border-radius: 1.05rem; z-index: 0;
-    background: linear-gradient(120deg, var(--primary-container), transparent 40%, var(--status-success) 90%);
-    opacity: 0.35; filter: blur(10px);
-  }
-
-  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-
-  :focus-visible { outline: 2px solid var(--primary-accent); outline-offset: 2px; border-radius: 4px; }
-
-  @media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
-    .caret { animation: none; }
-    html { scroll-behavior: auto; }
-  }
-</style>
 <noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-tailwind.config = {
-  darkMode: "class",
-  theme: {
-    extend: {
-      colors: {
-        "primary": "var(--primary)",
-        "primary-container": "var(--primary-container)",
-        "primary-hover": "var(--primary-hover)",
-        "primary-accent": "var(--primary-accent)",
-        "on-primary": "#ffffff",
-        "surface": "var(--surface)",
-        "surface-container": "var(--surface-container)",
-        "surface-container-low": "var(--surface-container-low)",
-        "surface-container-high": "var(--surface-container-high)",
-        "surface-container-highest": "var(--surface-container-highest)",
-        "surface-card": "var(--surface-card)",
-        "surface-card-subtle": "var(--surface-card-subtle)",
-        "surface-border": "var(--surface-border)",
-        "surface-border-subtle": "var(--surface-border-subtle)",
-        "on-surface": "var(--on-surface)",
-        "on-surface-variant": "var(--on-surface-variant)",
-        "on-surface-muted": "var(--on-surface-muted)",
-        "status-success": "var(--status-success)",
-        "status-success-bg": "var(--status-success-bg)",
-        "status-warning": "var(--status-warning)",
-        "status-warning-bg": "var(--status-warning-bg)",
-        "status-error": "var(--status-error)",
-        "status-error-bg": "var(--status-error-bg)"
-      },
-      fontFamily: {
-        headline: ["Inter", "sans-serif"],
-        display: ["Inter", "sans-serif"],
-        body: ["Inter", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"]
-      },
-      borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" }
-    }
-  }
-}
-</script>
+<link rel="stylesheet" href="css/site.css?v=2">
 </head>
 <body class="bg-surface font-body text-on-surface antialiased selection:bg-primary-container/15 selection:text-primary-accent">
+<a class="skip-link" href="#main">Skip to content</a>
+<div id="scroll-progress" aria-hidden="true"></div>
 
 <!-- ================= HEADER ================= -->
 <header id="site-header" class="fixed top-0 left-0 w-full z-50 bg-surface/90 backdrop-blur-md border-b border-surface-border">
   <div class="h-16 max-w-7xl mx-auto px-6 lg:px-12 flex items-center justify-between gap-6">
-    <a href="#top" class="flex items-center gap-2.5 shrink-0" aria-label="Sidecar home">
+    <a href="#main" class="flex items-center gap-2.5 shrink-0" aria-label="Sidecar home">
       <img src="assets/brand/svg/sidecar-symbol.svg" alt="Sidecar logo" class="h-8 w-auto dark:hidden">
       <img src="assets/brand/svg/sidecar-symbol-white.svg" alt="Sidecar logo" class="h-8 w-auto hidden dark:block">
       <div class="flex items-center gap-2">
@@ -250,6 +57,7 @@ tailwind.config = {
       <a class="nav-link px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#compatibility" data-nav="compatibility">Compatibility</a>
       <a class="nav-link px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#privacy" data-nav="privacy">Privacy</a>
       <a class="nav-link px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#planned-next" data-nav="planned-next">Roadmap</a>
+      <a class="nav-link px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#faq" data-nav="faq">FAQ</a>
       <a class="px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors flex items-center gap-1" href="https://github.com/dhruv2003/sidecar" rel="noreferrer" target="_blank">GitHub <span class="material-symbols-outlined text-[13px] text-on-surface-muted">arrow_outward</span></a>
     </nav>
     <div class="flex items-center gap-2.5 shrink-0">
@@ -258,7 +66,7 @@ tailwind.config = {
         <span class="material-symbols-outlined text-[18px] icon-moon">dark_mode</span>
       </button>
       <a class="hidden sm:inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-xs font-medium bg-surface-card border border-surface-border text-on-surface shadow-sm hover:bg-surface-card-subtle transition-colors" href="download.html">Download Sidecar</a>
-      <a class="hidden xs:inline-flex sm:inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-xs font-medium bg-primary-container text-on-primary shadow-sm hover:bg-primary-hover transition-colors" href="#preview">Open dashboard</a>
+      <a class="hidden sm:inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-xs font-medium bg-primary-container text-on-primary shadow-sm hover:bg-primary-hover transition-colors" href="#preview">Open dashboard</a>
       <button id="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" class="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg bg-surface-card border border-surface-border text-on-surface transition-colors">
         <span class="material-symbols-outlined text-[20px] icon-menu">menu</span>
         <span class="material-symbols-outlined text-[20px] icon-close hidden">close</span>
@@ -273,6 +81,7 @@ tailwind.config = {
       <a class="nav-link px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#compatibility" data-nav="compatibility">Compatibility</a>
       <a class="nav-link px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#privacy" data-nav="privacy">Privacy</a>
       <a class="nav-link px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#planned-next" data-nav="planned-next">Roadmap</a>
+      <a class="nav-link px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="#faq" data-nav="faq">FAQ</a>
       <a class="px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors flex items-center gap-1.5" href="https://github.com/dhruv2003/sidecar" rel="noreferrer" target="_blank">GitHub <span class="material-symbols-outlined text-[14px]">arrow_outward</span></a>
       <div class="pt-3 mt-2 border-t border-surface-border flex flex-col gap-2">
         <a class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-medium bg-surface-card-subtle border border-surface-border text-on-surface" href="download.html">Download Sidecar</a>
@@ -282,7 +91,7 @@ tailwind.config = {
   </div>
 </header>
 
-<main id="top" class="w-full pt-16 bg-surface min-h-screen">
+<main id="main" tabindex="-1" class="w-full pt-16 bg-surface min-h-screen">
 <div class="flex flex-col w-full">
 
 <!-- ================= HERO ================= -->
@@ -372,40 +181,40 @@ tailwind.config = {
         </span>
       </div>
 
-      <!-- 4-step progress tracker -->
+      <!-- 4-step progress tracker (interactive: also drives the wizard) -->
       <div class="bg-surface-card-subtle px-6 py-3.5 border-b border-surface-border-subtle overflow-x-auto">
         <div class="flex items-center justify-between min-w-[580px] gap-2 text-xs">
-          <div class="flex items-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-status-success text-white flex items-center justify-center text-[11px] font-bold">✓</span>
+          <button type="button" class="demo-step flex items-center gap-2 text-left" data-step="1" aria-pressed="true">
+            <span class="demo-chip w-5 h-5 rounded-full bg-status-success text-white flex items-center justify-center text-[11px] font-bold">✓</span>
             <div class="leading-tight">
               <p class="font-semibold text-on-surface">1. Workspace</p>
               <p class="text-[10px] text-on-surface-muted font-mono">~/Projects/client-portal</p>
             </div>
-          </div>
+          </button>
           <div class="h-0.5 w-6 bg-status-success"></div>
-          <div class="flex items-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-status-success text-white flex items-center justify-center text-[11px] font-bold">✓</span>
+          <button type="button" class="demo-step flex items-center gap-2 text-left" data-step="2" aria-pressed="true">
+            <span class="demo-chip w-5 h-5 rounded-full bg-status-success text-white flex items-center justify-center text-[11px] font-bold">✓</span>
             <div class="leading-tight">
               <p class="font-semibold text-on-surface">2. Create key</p>
               <p class="text-[10px] text-on-surface-muted font-mono">local-development</p>
             </div>
-          </div>
+          </button>
           <div class="h-0.5 w-6 bg-status-success"></div>
-          <div class="flex items-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-status-success text-white flex items-center justify-center text-[11px] font-bold">✓</span>
+          <button type="button" class="demo-step flex items-center gap-2 text-left" data-step="3" aria-pressed="true">
+            <span class="demo-chip w-5 h-5 rounded-full bg-status-success text-white flex items-center justify-center text-[11px] font-bold">✓</span>
             <div class="leading-tight">
               <p class="font-semibold text-on-surface">3. Sign in</p>
               <p class="text-[10px] text-on-surface-muted font-mono">Codex linked</p>
             </div>
-          </div>
+          </button>
           <div class="h-0.5 w-6 bg-primary-container"></div>
-          <div class="flex items-center gap-2">
-            <span class="w-5 h-5 rounded-full bg-primary-container text-white flex items-center justify-center text-[11px] font-bold shadow-[0_0_12px_var(--glow)]">4</span>
+          <button type="button" class="demo-step flex items-center gap-2 text-left" data-step="4" aria-pressed="true">
+            <span class="demo-chip w-5 h-5 rounded-full bg-primary-container text-white flex items-center justify-center text-[11px] font-bold shadow-[0_0_12px_var(--glow)]">4</span>
             <div class="leading-tight">
               <p class="font-semibold text-primary-accent">4. Test connection</p>
-              <p class="text-[10px] text-primary-accent font-mono">Ready to dispatch</p>
+              <p class="demo-step-sub text-[10px] text-primary-accent font-mono">Ready to dispatch</p>
             </div>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -441,11 +250,18 @@ tailwind.config = {
         <!-- Handshake console -->
         <div class="rounded-xl border border-surface-border overflow-hidden">
           <div class="bg-surface-container-low px-4 py-2.5 border-b border-surface-border flex items-center justify-between gap-3">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 min-w-0">
               <span class="material-symbols-outlined text-[16px] text-on-surface-muted">send</span>
               <span class="font-headline font-semibold text-xs text-on-surface">Live Handshake Test</span>
             </div>
-            <span class="font-mono text-[11px] text-on-surface-muted truncate">POST /v1/chat/completions</span>
+            <div class="flex items-center gap-2 shrink-0">
+              <span id="demo-pill" class="font-mono text-[11px] font-bold text-status-success bg-status-success-bg px-2 py-0.5 rounded">READY</span>
+              <button id="demo-run" type="button" class="inline-flex items-center gap-1 font-semibold text-xs bg-primary-accent hover:opacity-90 active:scale-[0.97] transition text-white rounded-lg px-3 py-1.5">
+                <span class="material-symbols-outlined text-[14px] leading-none">play_arrow</span>
+                <span class="hidden sm:inline">Run</span> test
+              </button>
+            </div>
+            <span id="demo-live" class="sr-only" aria-live="polite"></span>
           </div>
           <div class="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-surface-card-subtle p-3.5 rounded-lg border border-surface-border font-mono text-xs">
@@ -463,37 +279,43 @@ tailwind.config = {
   ]
 }<span class="caret" aria-hidden="true"></span></pre>
             </div>
-            <div class="bg-status-success-bg/60 p-3.5 rounded-lg border border-status-success/30 flex flex-col justify-between">
-              <div>
-                <div class="flex items-center justify-between pb-2 border-b border-status-success/20 mb-2">
-                  <div class="flex items-center gap-1.5">
-                    <span class="w-2 h-2 rounded-full bg-status-success"></span>
-                    <span class="font-headline font-semibold text-xs text-status-success">Connection successful</span>
-                  </div>
-                  <span class="font-mono text-[11px] font-bold text-status-success bg-status-success-bg px-2 py-0.5 rounded">200 OK</span>
-                </div>
-                <div class="space-y-1 font-mono text-[11px] text-on-surface-variant">
-                  <div class="flex justify-between gap-3">
-                    <span>Latency (example):</span>
-                    <span class="font-semibold text-on-surface">~412ms</span>
-                  </div>
-                  <div class="flex justify-between gap-3">
-                    <span>Tokens used (example):</span>
-                    <span class="font-semibold text-on-surface">32 total (14 / 18)</span>
-                  </div>
-                  <div class="flex justify-between gap-3">
-                    <span>Auth Type:</span>
-                    <span class="text-on-surface">Bearer (local-development)</span>
-                  </div>
-                  <div class="flex justify-between gap-3">
-                    <span>Daemon port:</span>
-                    <span class="text-on-surface">3081 / loopback ok</span>
-                  </div>
-                </div>
+            <div id="demo-result" class="relative bg-status-success-bg/60 p-3.5 rounded-lg border border-status-success/30 flex flex-col justify-between demo-ok">
+              <div class="demo-send-state hidden items-center gap-2.5 py-1" aria-hidden="true">
+                <span class="w-4 h-4 rounded-full border-2 border-status-success/30 border-t-status-success animate-spin"></span>
+                <span class="font-mono text-[11px] font-medium text-status-success">Dispatching test request…</span>
               </div>
-              <div class="mt-3 pt-2.5 border-t border-status-success/20 text-[11px] text-status-success font-medium flex items-center gap-1">
-                <span class="material-symbols-outlined text-[14px]">check_circle</span>
-                Codex accepted request &amp; returned valid completion
+              <div class="demo-ok-state">
+                <div>
+                  <div class="flex items-center justify-between pb-2 border-b border-status-success/20 mb-2">
+                    <div class="flex items-center gap-1.5">
+                      <span class="w-2 h-2 rounded-full bg-status-success"></span>
+                      <span id="demo-status-word" class="font-headline font-semibold text-xs text-status-success">Connection successful</span>
+                    </div>
+                    <span id="demo-status-code" class="font-mono text-[11px] font-bold text-status-success bg-status-success-bg px-2 py-0.5 rounded">200 OK</span>
+                  </div>
+                  <div class="space-y-1 font-mono text-[11px] text-on-surface-variant">
+                    <div class="flex justify-between gap-3">
+                      <span>Latency (example):</span>
+                      <span id="demo-latency" class="font-semibold text-on-surface">~412ms</span>
+                    </div>
+                    <div class="flex justify-between gap-3">
+                      <span>Tokens used (example):</span>
+                      <span id="demo-tokens" class="font-semibold text-on-surface">32 total (14 / 18)</span>
+                    </div>
+                    <div class="flex justify-between gap-3">
+                      <span>Auth Type:</span>
+                      <span class="text-on-surface">Bearer (local-development)</span>
+                    </div>
+                    <div class="flex justify-between gap-3">
+                      <span>Daemon port:</span>
+                      <span class="text-on-surface">3081 / loopback ok</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="demo-result-note mt-3 pt-2.5 border-t border-status-success/20 text-[11px] text-status-success font-medium flex items-center gap-1">
+                  <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                  Codex accepted request &amp; returned valid completion
+                </div>
               </div>
             </div>
           </div>
@@ -530,7 +352,7 @@ tailwind.config = {
     <div class="hidden lg:block absolute top-[4.5rem] left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-primary-container/40 to-transparent" aria-hidden="true"></div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
-      <div class="reveal lift relative bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between">
+      <button type="button" class="step-card reveal lift relative bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between text-left" data-step="1" aria-pressed="false">
         <div>
           <div class="flex items-center justify-between mb-4">
             <span class="w-8 h-8 rounded-lg bg-surface-container font-mono font-bold text-xs text-on-surface flex items-center justify-center border border-surface-border">01</span>
@@ -548,9 +370,9 @@ tailwind.config = {
         <span class="mt-5 text-[11px] text-on-surface-muted flex items-center gap-1">
           <span class="material-symbols-outlined text-[13px] text-status-success">check</span> Full folder path sandbox
         </span>
-      </div>
+      </button>
 
-      <div class="reveal lift relative bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between" style="transition-delay:80ms">
+      <button type="button" class="step-card reveal lift relative bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between text-left" data-step="2" aria-pressed="false" style="transition-delay:80ms">
         <div>
           <div class="flex items-center justify-between mb-4">
             <span class="w-8 h-8 rounded-lg bg-surface-container font-mono font-bold text-xs text-on-surface flex items-center justify-center border border-surface-border">02</span>
@@ -568,9 +390,9 @@ tailwind.config = {
         <span class="mt-5 text-[11px] text-on-surface-muted flex items-center gap-1">
           <span class="material-symbols-outlined text-[13px] text-status-success">check</span> Rate limits &amp; optional expiry
         </span>
-      </div>
+      </button>
 
-      <div class="reveal lift relative bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between" style="transition-delay:160ms">
+      <button type="button" class="step-card reveal lift relative bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between text-left" data-step="3" aria-pressed="false" style="transition-delay:160ms">
         <div>
           <div class="flex items-center justify-between mb-4">
             <span class="w-8 h-8 rounded-lg bg-surface-container font-mono font-bold text-xs text-on-surface flex items-center justify-center border border-surface-border">03</span>
@@ -588,9 +410,9 @@ tailwind.config = {
         <span class="mt-5 text-[11px] text-on-surface-muted flex items-center gap-1">
           <span class="material-symbols-outlined text-[13px] text-status-success">check</span> Direct account session
         </span>
-      </div>
+      </button>
 
-      <div class="reveal lift relative bg-surface-card p-6 rounded-2xl border-2 border-primary-container shadow-sm flex flex-col justify-between" style="transition-delay:240ms">
+      <button type="button" class="step-card reveal lift relative bg-surface-card p-6 rounded-2xl border-2 border-primary-container shadow-sm flex flex-col justify-between text-left" data-step="4" aria-pressed="true" style="transition-delay:240ms">
         <div>
           <div class="flex items-center justify-between mb-4">
             <span class="w-8 h-8 rounded-lg bg-primary-container font-mono font-bold text-xs text-white flex items-center justify-center">04</span>
@@ -608,9 +430,13 @@ tailwind.config = {
         <span class="mt-5 text-[11px] text-status-success font-medium flex items-center gap-1">
           <span class="material-symbols-outlined text-[13px]">check_circle</span> Proven before code is written
         </span>
-      </div>
+      </button>
 
     </div>
+  </div>
+  <div class="mt-6 flex items-center justify-center gap-2 text-xs text-on-surface-muted">
+    <span class="material-symbols-outlined text-[14px] text-primary-accent">call_split</span>
+    Click a step to sync the dashboard mockup above.
   </div>
 </section>
 
@@ -635,9 +461,14 @@ tailwind.config = {
             <span class="material-symbols-outlined text-[16px] text-on-surface-muted">list_alt</span>
             <span class="font-headline font-semibold text-xs text-on-surface">Recent Requests</span>
           </div>
-          <span class="font-mono text-[11px] text-on-surface-muted">Rate limit: 60 req/min</span>
+          <div class="flex items-center gap-2.5">
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-medium text-status-success bg-status-success-bg px-2 py-0.5 rounded">
+              <span class="w-1.5 h-1.5 rounded-full bg-status-success animate-pulse"></span> Live
+            </span>
+            <span class="font-mono text-[11px] text-on-surface-muted">Rate limit: 60 req/min</span>
+          </div>
         </div>
-        <div class="divide-y divide-surface-border text-xs">
+        <div id="req-log" class="divide-y divide-surface-border text-xs">
           <div class="p-3.5 flex items-center justify-between gap-3 hover:bg-surface-card transition-colors">
             <div class="flex items-center gap-2.5 min-w-0">
               <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-status-success-bg text-status-success border border-status-success/30 shrink-0">200 OK</span>
@@ -926,8 +757,79 @@ tailwind.config = {
   </div>
 </section>
 
+<!-- ================= FAQ ================= -->
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full cv-auto" id="faq">
+  <div class="reveal max-w-3xl mb-10">
+    <span class="text-xs font-headline font-bold text-primary-accent uppercase tracking-wider">FAQ</span>
+    <h2 class="text-3xl sm:text-4xl font-headline font-bold text-on-surface tracking-tight mt-2">
+      Quick answers <span class="text-gradient">before you start.</span>
+    </h2>
+    <p class="mt-3 text-sm sm:text-base text-on-surface-variant leading-relaxed">
+      The questions that come up most before the first install.
+    </p>
+  </div>
+  <div class="reveal grid grid-cols-1 lg:grid-cols-2 gap-5" itemscope itemtype="https://schema.org/FAQPage">
+    <details class="faq-item group bg-surface-card border border-surface-border rounded-2xl p-6 transition-colors hover:border-primary-container/40" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary class="flex items-center justify-between gap-4 text-base font-headline font-semibold text-on-surface">
+        <span class="flex items-center gap-3.5 min-w-0">
+          <span class="w-10 h-10 rounded-xl bg-primary-container/10 text-primary-accent flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">shield_lock</span>
+          </span>
+          <span itemprop="name">Where does my data and prompt history go?</span>
+        </span>
+        <span class="faq-chevron material-symbols-outlined text-[20px] text-primary-accent shrink-0" aria-hidden="true">expand_more</span>
+      </summary>
+      <div class="mt-4 pt-4 border-t border-surface-border-subtle text-sm text-on-surface-variant leading-relaxed" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <span itemprop="text">Everything runs locally by default. Requests route through the Sidecar gateway on your machine, request history keeps metadata only, and prompts are forwarded to Codex as a direct account session — Sidecar does not host, log, or store your conversation content.</span>
+      </div>
+    </details>
+    <details class="faq-item group bg-surface-card border border-surface-border rounded-2xl p-6 transition-colors hover:border-primary-container/40" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary class="flex items-center justify-between gap-4 text-base font-headline font-semibold text-on-surface">
+        <span class="flex items-center gap-3.5 min-w-0">
+          <span class="w-10 h-10 rounded-xl bg-primary-container/10 text-primary-accent flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">payments</span>
+          </span>
+          <span itemprop="name">Is there a usage quota or do I pay per request?</span>
+        </span>
+        <span class="faq-chevron material-symbols-outlined text-[20px] text-primary-accent shrink-0" aria-hidden="true">expand_more</span>
+      </summary>
+      <div class="mt-4 pt-4 border-t border-surface-border-subtle text-sm text-on-surface-variant leading-relaxed" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <span itemprop="text">Sidecar itself is free to use; it adds no per-request fees. Your personal Codex account supplies the model entitlement, so billing follows your own account's plan. Rate limits protect your quota with a configurable safety bucket.</span>
+      </div>
+    </details>
+    <details class="faq-item group bg-surface-card border border-surface-border rounded-2xl p-6 transition-colors hover:border-primary-container/40" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary class="flex items-center justify-between gap-4 text-base font-headline font-semibold text-on-surface">
+        <span class="flex items-center gap-3.5 min-w-0">
+          <span class="w-10 h-10 rounded-xl bg-primary-container/10 text-primary-accent flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">bolt</span>
+          </span>
+          <span itemprop="name">Which models does Sidecar work with?</span>
+        </span>
+        <span class="faq-chevron material-symbols-outlined text-[20px] text-primary-accent shrink-0" aria-hidden="true">expand_more</span>
+      </summary>
+      <div class="mt-4 pt-4 border-t border-surface-border-subtle text-sm text-on-surface-variant leading-relaxed" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <span itemprop="text">Sidecar dispatches to your linked Codex session, so the models available from your Codex account are what you can test — no extra setup per model. Model telemetry (latency, token counts) is reported per request in the dashboard.</span>
+      </div>
+    </details>
+    <details class="faq-item group bg-surface-card border border-surface-border rounded-2xl p-6 transition-colors hover:border-primary-container/40" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary class="flex items-center justify-between gap-4 text-base font-headline font-semibold text-on-surface">
+        <span class="flex items-center gap-3.5 min-w-0">
+          <span class="w-10 h-10 rounded-xl bg-primary-container/10 text-primary-accent flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">support_agent</span>
+          </span>
+          <span itemprop="name">What if I need help or hit a connection error?</span>
+        </span>
+        <span class="faq-chevron material-symbols-outlined text-[20px] text-primary-accent shrink-0" aria-hidden="true">expand_more</span>
+      </summary>
+      <div class="mt-4 pt-4 border-t border-surface-border-subtle text-sm text-on-surface-variant leading-relaxed" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+        <span itemprop="text">Open an issue on the <a class="text-primary-accent hover:underline" href="https://github.com/dhruv2003/sidecar" rel="noreferrer" target="_blank">Sidecar GitHub repository</a> with your OS version and the test output. For quick checks, run the dashboard's "Test Connection" — it shows whether the local port, upstream handshake, or auth session is the blocker.</span>
+      </div>
+    </details>
+  </div>
+</section>
+
 <!-- ================= CTA ================= -->
-<section class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full" id="download">
+<section class="max-w-7xl mx-auto px-6 lg:px-12 py-16 w-full cv-auto" id="download">
   <div class="reveal glow-wrap">
     <div class="relative z-10 bg-surface-card p-8 sm:p-14 rounded-2xl border border-surface-border shadow-md overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8">
       <div class="hero-backdrop" aria-hidden="true">
@@ -979,6 +881,7 @@ tailwind.config = {
       <a class="hover:text-on-surface transition-colors" href="#compatibility">Compatibility</a>
       <a class="hover:text-on-surface transition-colors" href="#privacy">Privacy</a>
       <a class="hover:text-on-surface transition-colors" href="#planned-next">Roadmap</a>
+      <a class="hover:text-on-surface transition-colors" href="#faq">FAQ</a>
     </nav>
     <div class="flex flex-col gap-2 text-xs text-on-surface-variant font-medium md:items-end">
       <a class="hover:text-on-surface transition-colors inline-flex items-center gap-1.5" href="https://github.com/dhruv2003/sidecar" rel="noreferrer" target="_blank">
@@ -988,6 +891,17 @@ tailwind.config = {
     </div>
   </div>
 </footer>
+
+<!-- Sticky mobile download bar -->
+<div id="mobile-dl-bar" class="sm:hidden bg-surface-card border-t border-surface-border backdrop-blur px-4 py-3 flex items-center justify-between gap-3 shadow-[0_-8px_24px_-14px_rgba(0,0,0,0.3)]">
+  <div class="min-w-0">
+    <p class="text-xs font-headline font-bold text-on-surface truncate">Sidecar for macOS &amp; Windows</p>
+    <p class="text-[10px] text-on-surface-muted">Local AI gateway • Free</p>
+  </div>
+  <a href="download.html" class="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-primary-container text-on-primary text-xs font-semibold shadow-md hover:bg-primary-hover transition-all">
+    <span class="material-symbols-outlined text-[15px] leading-none">download</span> Download
+  </a>
+</div>
 
 <!-- Back to top -->
 <button id="to-top" type="button" aria-label="Back to top" class="hidden-btn fixed bottom-6 right-6 z-40 w-10 h-10 rounded-full bg-surface-card border border-surface-border shadow-lg text-on-surface-muted hover:text-on-surface hover:bg-surface-card-subtle flex items-center justify-center">
@@ -1110,6 +1024,134 @@ tailwind.config = {
 
   // ---- Footer year ----
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  // ---- Scroll progress bar ----
+  var progressBar = document.getElementById('scroll-progress');
+  function onScrollP() {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.transform = 'scaleX(' + (max > 0 ? Math.min(window.scrollY / max, 1) : 0) + ')';
+  }
+  window.addEventListener('scroll', onScrollP, { passive: true });
+  onScrollP();
+
+  // ---- Sticky mobile download bar ----
+  // Requirement: the bar appears once the visitor has scrolled below the
+  // top of the #download CTA section, and body gets .dl-bar-on.
+  var dlBar = document.getElementById('mobile-dl-bar');
+  var ctaArea = document.getElementById('download');
+  function updateDlBar() {
+    var on = Boolean(ctaArea) && ctaArea.getBoundingClientRect().top < 0;
+    dlBar.classList.toggle('visible', on);
+    document.body.classList.toggle('dl-bar-on', on);
+  }
+  if (dlBar && ctaArea) {
+    window.addEventListener('scroll', updateDlBar, { passive: true });
+    window.addEventListener('resize', updateDlBar, { passive: true });
+    updateDlBar();
+  }
+
+  // ---- Interactive hero demo ----
+  var demoResult = document.getElementById('demo-result');
+  var demoRun = document.getElementById('demo-run');
+  var demoPill = document.getElementById('demo-pill');
+  var demoLive = document.getElementById('demo-live');
+  var demoWord = document.getElementById('demo-status-word');
+  var demoCode = document.getElementById('demo-status-code');
+  var demoLatency = document.getElementById('demo-latency');
+  var demoTokens = document.getElementById('demo-tokens');
+  var demoSteps = document.querySelectorAll('.demo-step');
+  var stepCards = document.querySelectorAll('.step-card');
+  var stepNames = { 1: 'workspace', 2: 'scoped key', 3: 'Codex sign-in', 4: 'test connection' };
+  var demoBusy = false;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function setDemoStep(step) {
+    // Tracker chips reflect progress (steps <= selected are "done/active");
+    // step cards highlight the single selected step.
+    demoSteps.forEach(function (el) {
+      el.setAttribute('aria-pressed', Number(el.getAttribute('data-step')) <= step ? 'true' : 'false');
+    });
+    stepCards.forEach(function (el) {
+      el.setAttribute('aria-pressed', Number(el.getAttribute('data-step')) === step ? 'true' : 'false');
+    });
+    if (demoLive) {
+      demoLive.textContent = 'Step ' + step + ' of 4 selected: ' + (stepNames[step] || '');
+    }
+  }
+
+  function runDemo() {
+    if (demoBusy) return;
+    demoBusy = true;
+    demoResult.classList.remove('demo-ok');
+    demoResult.classList.add('demo-sending');
+    demoPill.textContent = 'SENDING…';
+    demoPill.className = 'font-mono text-[11px] font-bold text-primary-accent bg-primary-container/15 px-2 py-0.5 rounded';
+    setTimeout(function () {
+      var latency = Math.max(380, Math.min(980, 412 + Math.round(Math.random() * 180)));
+      var total = 24 + Math.floor(Math.random() * 40);
+      var input = Math.round(total * 0.42);
+      demoResult.classList.remove('demo-sending');
+      demoResult.classList.add('demo-ok');
+      demoPill.textContent = '200 OK';
+      demoPill.className = 'font-mono text-[11px] font-bold text-status-success bg-status-success-bg px-2 py-0.5 rounded';
+      demoWord.textContent = 'Connection successful';
+      demoCode.textContent = '200 OK';
+      demoLatency.textContent = '~' + latency + 'ms (example)';
+      demoTokens.textContent = total + ' total (' + input + ' / ' + (total - input) + ')';
+      demoLive.textContent = 'Connection successful. Latency about ' + latency + ' milliseconds, ' + total + ' tokens used.';
+      demoBusy = false;
+    }, reduced ? 350 : 1250);
+  }
+
+  if (demoRun) {
+    demoRun.addEventListener('click', runDemo);
+    demoSteps.forEach(function (el) {
+      el.addEventListener('click', function () {
+        setDemoStep(Number(el.getAttribute('data-step')));
+        if (Number(el.getAttribute('data-step')) === 4) runDemo();
+      });
+    });
+    stepCards.forEach(function (el) {
+      el.addEventListener('click', function () {
+        setDemoStep(Number(el.getAttribute('data-step')));
+        if (Number(el.getAttribute('data-step')) === 4 && !demoBusy) runDemo();
+      });
+    });
+  }
+
+  // ---- Live request log ticker ----
+  var reqLog = document.getElementById('req-log');
+  if (reqLog) {
+    var tickerPool = [
+      { code: '200 OK', cls: 'bg-status-success-bg text-status-success border-status-success/30', name: 'Prototype test completion', sub: 'Selected model • just now', lat: '~890ms', tokens: '128 tokens (example)' },
+      { code: '200 OK', cls: 'bg-status-success-bg text-status-success border-status-success/30', name: 'IDE inline query', sub: 'Codex model • 1 min ago', lat: '~412ms', tokens: '28 tokens (example)' },
+      { code: '200 OK', cls: 'bg-status-success-bg text-status-success border-status-success/30', name: 'Local connection verification', sub: 'handshake-ping • 14 mins ago', lat: '210ms (example)', tokens: '32 tokens (example)' },
+      { code: '429', cls: 'bg-status-warning-bg text-status-warning border-status-warning/40', name: 'Rapid script loop throttled', sub: 'Safety bucket preserved quota', lat: '12ms (example)', tokens: '0 tokens billed' },
+      { code: '200 OK', cls: 'bg-status-success-bg text-status-success border-status-success/30', name: 'Batch validation script', sub: 'client-portal • 2 mins ago', lat: '1,240ms', tokens: '542 tokens (example)' }
+    ];
+    var poolIdx = 0;
+    setInterval(function () {
+      var row = tickerPool[poolIdx % tickerPool.length];
+      poolIdx++;
+      var div = document.createElement('div');
+      div.className = 'req-row-new p-3.5 flex items-center justify-between gap-3 hover:bg-surface-card transition-colors';
+      div.innerHTML = '<div class="flex items-center gap-2.5 min-w-0">' +
+        '<span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold border shrink-0 ' + row.cls + '">' + row.code + '</span>' +
+        '<div class="min-w-0"><p class="font-medium text-on-surface truncate">' + row.name + '</p>' +
+        '<p class="text-[10px] font-mono text-on-surface-muted">' + row.sub + '</p></div></div>' +
+        '<div class="text-right font-mono text-[11px] shrink-0"><p class="text-on-surface font-medium">' + row.lat + '</p>' +
+        '<p class="text-[10px] text-on-surface-muted">' + row.tokens + '</p></div>';
+      reqLog.insertBefore(div, reqLog.firstChild);
+      while (reqLog.children.length > 4) reqLog.removeChild(reqLog.lastChild);
+    }, reduced ? 9000 : 4200);
+  }
+
+  // ---- Service worker ----
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    });
+  }
 })();
 </script>
 
