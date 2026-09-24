@@ -10,27 +10,49 @@
 /* ---------- Theme tokens ---------- */
 :root {
   --primary: #0037e4;
+  --primary-rgb: 0 55 228;
   --primary-container: #3155ff;
+  --primary-container-rgb: 49 85 255;
   --primary-hover: #002fc8;
+  --primary-hover-rgb: 0 47 200;
   --primary-accent: #3155ff;
+  --primary-accent-rgb: 49 85 255;
   --surface: #fdf9ef;
+  --surface-rgb: 253 249 239;
   --surface-container: #f2eee3;
+  --surface-container-rgb: 242 238 227;
   --surface-container-low: #f8f3e9;
+  --surface-container-low-rgb: 248 243 233;
   --surface-container-high: #ece8de;
+  --surface-container-high-rgb: 236 232 222;
   --surface-container-highest: #e6e2d8;
+  --surface-container-highest-rgb: 230 226 216;
   --surface-card: #ffffff;
+  --surface-card-rgb: 255 255 255;
   --surface-card-subtle: #faf9f6;
+  --surface-card-subtle-rgb: 250 249 246;
   --surface-border: #d8d5cc;
+  --surface-border-rgb: 216 213 204;
   --surface-border-subtle: #e4e1d8;
+  --surface-border-subtle-rgb: 228 225 216;
   --on-surface: #151515;
+  --on-surface-rgb: 21 21 21;
   --on-surface-variant: #444656;
+  --on-surface-variant-rgb: 68 70 86;
   --on-surface-muted: #6b6961;
+  --on-surface-muted-rgb: 107 105 97;
   --status-success: #12805c;
+  --status-success-rgb: 18 128 92;
   --status-success-bg: #e8f7f0;
+  --status-success-bg-rgb: 232 247 240;
   --status-warning: #b26400;
+  --status-warning-rgb: 178 100 0;
   --status-warning-bg: #fff6e5;
+  --status-warning-bg-rgb: 255 246 229;
   --status-error: #ba1a1a;
+  --status-error-rgb: 186 26 26;
   --status-error-bg: #ffdad6;
+  --status-error-bg-rgb: 255 218 214;
   --glow: rgba(49, 85, 255, 0.28);
   --grid-line: rgba(21, 21, 21, 0.05);
   --blob-a: rgba(49, 85, 255, 0.10);
@@ -38,26 +60,45 @@
 }
 .dark {
   --primary: #4d6dff;
+  --primary-rgb: 77 109 255;
   --primary-container: #4a68ff;
+  --primary-container-rgb: 74 104 255;
   --primary-hover: #6780ff;
+  --primary-hover-rgb: 103 128 255;
   --primary-accent: #93a6ff;
+  --primary-accent-rgb: 147 166 255;
   --surface: #0d0e12;
+  --surface-rgb: 13 14 18;
   --surface-container: #15171c;
+  --surface-container-rgb: 21 23 28;
   --surface-container-low: #111318;
+  --surface-container-low-rgb: 17 19 24;
   --surface-container-high: #1b1e24;
+  --surface-container-high-rgb: 27 30 36;
   --surface-container-highest: #22252c;
+  --surface-container-highest-rgb: 34 37 44;
   --surface-card: #14161b;
+  --surface-card-rgb: 20 22 27;
   --surface-card-subtle: #171a20;
+  --surface-card-subtle-rgb: 23 26 32;
   --surface-border: #2a2e37;
+  --surface-border-rgb: 42 46 55;
   --surface-border-subtle: #20242c;
+  --surface-border-subtle-rgb: 32 36 44;
   --on-surface: #ecedf1;
+  --on-surface-rgb: 236 237 241;
   --on-surface-variant: #b3b6c2;
+  --on-surface-variant-rgb: 179 182 194;
   --on-surface-muted: #83879a;
+  --on-surface-muted-rgb: 131 135 154;
   --status-success: #3ecf96;
+  --status-success-rgb: 62 207 150;
   --status-success-bg: rgba(62, 207, 150, 0.12);
   --status-warning: #e5a13c;
+  --status-warning-rgb: 229 161 60;
   --status-warning-bg: rgba(229, 161, 60, 0.12);
   --status-error: #ff7a70;
+  --status-error-rgb: 255 122 112;
   --status-error-bg: rgba(255, 122, 112, 0.12);
   --glow: rgba(93, 124, 255, 0.35);
   --grid-line: rgba(236, 237, 241, 0.04);
@@ -267,6 +308,11 @@ body.dl-bar-on {
     padding-bottom: 0;
   }
 }
+@media (max-width: 640px) {
+  body.dl-bar-on #to-top {
+    bottom: 76px;
+  }
+}
 
 /* ---------- Cards & interactions ---------- */
 .lift {
@@ -326,12 +372,14 @@ body.dl-bar-on {
 @keyframes blink {
   to { visibility: hidden; }
 }
-.demo-sending .demo-result-note,
-.demo-idle .demo-result-note {
+.demo-sending .demo-result-note {
   display: none;
 }
 .demo-sending .demo-send-state {
   display: flex;
+}
+.demo-sending .demo-ok-state {
+  display: none;
 }
 .demo-ok .demo-ok-state {
   animation: pop 0.35s cubic-bezier(0.22, 1, 0.36, 1);
@@ -348,6 +396,9 @@ body.dl-bar-on {
 .step-card[aria-pressed="true"] {
   border-color: var(--primary-container);
   box-shadow: 0 0 0 1px var(--primary-container), 0 14px 34px -18px rgba(49, 85, 255, 0.4);
+}
+.demo-step[aria-pressed="true"] .demo-chip {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-container) 25%, transparent);
 }
 
 /* ---------- FAQ ---------- */
@@ -390,8 +441,12 @@ body.dl-bar-on {
     transform: none !important;
     transition: none !important;
   }
-  .caret {
-    animation: none;
+  .caret,
+  .animate-spin,
+  .animate-pulse,
+  .req-row-new,
+  .demo-ok .demo-ok-state {
+    animation: none !important;
   }
   .skeleton::after {
     animation: none;

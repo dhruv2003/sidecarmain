@@ -46,7 +46,21 @@ self.addEventListener('fetch', function (event) {
   var url = new URL(req.url);
   if (url.origin !== location.origin) return; // never proxy cross-origin (GitHub API, fonts)
 
-  // Release snapshot, HTML shell and CSS: network-first via stale-while-revalidate.
+  // Release snapshot must stay fresh: network-first, cached copy only as fallback.
+  if (url.pathname.indexOf('latest-release.json') !== -1) {
+    event.respondWith(
+      fetch(req).then(function (resp) {
+        if (resp && resp.ok) {
+          var copy = resp.clone();
+          caches.open(CACHE).then(function (cache) { cache.put(req, copy); });
+        }
+        return resp;
+      }).catch(function () { return caches.match(req); })
+    );
+    return;
+  }
+
+  // Everything else: stale-while-revalidate.
   event.respondWith(
     caches.match(req).then(function (cached) {
       var network = fetch(req).then(function (resp) {

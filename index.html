@@ -66,7 +66,7 @@
         <span class="material-symbols-outlined text-[18px] icon-moon">dark_mode</span>
       </button>
       <a class="hidden sm:inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-xs font-medium bg-surface-card border border-surface-border text-on-surface shadow-sm hover:bg-surface-card-subtle transition-colors" href="download.html">Download Sidecar</a>
-      <a class="hidden xs:inline-flex sm:inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-xs font-medium bg-primary-container text-on-primary shadow-sm hover:bg-primary-hover transition-colors" href="#preview">Open dashboard</a>
+      <a class="hidden sm:inline-flex items-center justify-center px-3.5 py-1.5 rounded-lg text-xs font-medium bg-primary-container text-on-primary shadow-sm hover:bg-primary-hover transition-colors" href="#preview">Open dashboard</a>
       <button id="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" class="md:hidden inline-flex items-center justify-center w-9 h-9 rounded-lg bg-surface-card border border-surface-border text-on-surface transition-colors">
         <span class="material-symbols-outlined text-[20px] icon-menu">menu</span>
         <span class="material-symbols-outlined text-[20px] icon-close hidden">close</span>
@@ -208,7 +208,7 @@
             </div>
           </button>
           <div class="h-0.5 w-6 bg-primary-container"></div>
-          <button type="button" class="demo-step flex items-center gap-2 text-left" data-step="4" aria-pressed="false">
+          <button type="button" class="demo-step flex items-center gap-2 text-left" data-step="4" aria-pressed="true">
             <span class="demo-chip w-5 h-5 rounded-full bg-primary-container text-white flex items-center justify-center text-[11px] font-bold shadow-[0_0_12px_var(--glow)]">4</span>
             <div class="leading-tight">
               <p class="font-semibold text-primary-accent">4. Test connection</p>
@@ -352,7 +352,7 @@
     <div class="hidden lg:block absolute top-[4.5rem] left-[10%] right-[10%] h-px bg-gradient-to-r from-transparent via-primary-container/40 to-transparent" aria-hidden="true"></div>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
 
-      <button type="button" class="step-card reveal lift relative bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between text-left" data-step="1" aria-pressed="true">
+      <button type="button" class="step-card reveal lift relative bg-surface-card p-6 rounded-2xl border border-surface-border shadow-sm flex flex-col justify-between text-left" data-step="1" aria-pressed="false">
         <div>
           <div class="flex items-center justify-between mb-4">
             <span class="w-8 h-8 rounded-lg bg-surface-container font-mono font-bold text-xs text-on-surface flex items-center justify-center border border-surface-border">01</span>
@@ -1040,44 +1040,39 @@
   var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function setDemoStep(step) {
+    // Tracker chips reflect progress (steps <= selected are "done/active");
+    // step cards highlight the single selected step.
     demoSteps.forEach(function (el) {
-      var active = Number(el.getAttribute('data-step')) === step;
-      el.setAttribute('aria-pressed', active ? 'true' : 'false');
+      el.setAttribute('aria-pressed', Number(el.getAttribute('data-step')) <= step ? 'true' : 'false');
     });
     stepCards.forEach(function (el) {
       el.setAttribute('aria-pressed', Number(el.getAttribute('data-step')) === step ? 'true' : 'false');
     });
     if (demoLive) {
-      demoLive.setAttribute('aria-live', 'polite');
-      demoLive.textContent = 'Step ' + step + ': ' + (stepNames[step] || '');
-      demoLive.textContent = '';
+      demoLive.textContent = 'Step ' + step + ' of 4 selected: ' + (stepNames[step] || '');
     }
   }
 
   function runDemo() {
     if (demoBusy) return;
     demoBusy = true;
-    demoResult.classList.remove('demo-idle', 'demo-ok');
+    demoResult.classList.remove('demo-ok');
     demoResult.classList.add('demo-sending');
     demoPill.textContent = 'SENDING…';
     demoPill.className = 'font-mono text-[11px] font-bold text-primary-accent bg-primary-container/15 px-2 py-0.5 rounded';
-    var t0 = performance.now();
     setTimeout(function () {
-      var elapsed = Math.round((performance.now() - t0) / 10) * 10;
       var latency = Math.max(380, Math.min(980, 412 + Math.round(Math.random() * 180)));
       var total = 24 + Math.floor(Math.random() * 40);
       var input = Math.round(total * 0.42);
-      var latLabel = elapsed > 700 ? latency + 'ms (live)' : '~' + latency + 'ms (example)';
       demoResult.classList.remove('demo-sending');
       demoResult.classList.add('demo-ok');
       demoPill.textContent = '200 OK';
       demoPill.className = 'font-mono text-[11px] font-bold text-status-success bg-status-success-bg px-2 py-0.5 rounded';
       demoWord.textContent = 'Connection successful';
       demoCode.textContent = '200 OK';
-      demoLatency.textContent = latLabel;
+      demoLatency.textContent = '~' + latency + 'ms (example)';
       demoTokens.textContent = total + ' total (' + input + ' / ' + (total - input) + ')';
-      demoLive.textContent = 'Connection successful. Latency ' + latency + ' milliseconds.';
-      demoLive.textContent = '';
+      demoLive.textContent = 'Connection successful. Latency about ' + latency + ' milliseconds, ' + total + ' tokens used.';
       demoBusy = false;
     }, reduced ? 350 : 1250);
   }
@@ -1101,7 +1096,6 @@
   // ---- Live request log ticker ----
   var reqLog = document.getElementById('req-log');
   if (reqLog) {
-    var firstRows = reqLog.children;
     var tickerPool = [
       { code: '200 OK', cls: 'bg-status-success-bg text-status-success border-status-success/30', name: 'Prototype test completion', sub: 'Selected model • just now', lat: '~890ms', tokens: '128 tokens (example)' },
       { code: '200 OK', cls: 'bg-status-success-bg text-status-success border-status-success/30', name: 'IDE inline query', sub: 'Codex model • 1 min ago', lat: '~412ms', tokens: '28 tokens (example)' },

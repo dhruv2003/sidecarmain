@@ -210,6 +210,7 @@
     var dark = root.classList.contains('dark');
     themeBtn.querySelector('.icon-sun').classList.toggle('hidden', !dark);
     themeBtn.querySelector('.icon-moon').classList.toggle('hidden', dark);
+    themeBtn.setAttribute('aria-label', dark ? 'Switch to light mode' : 'Switch to dark mode');
   }
   themeBtn.addEventListener('click', function () {
     var dark = root.classList.toggle('dark');
@@ -230,6 +231,7 @@
   mobileMenu.querySelectorAll('a').forEach(function (a) {
     a.addEventListener('click', function () {
       mobileMenu.classList.add('closed');
+      menuBtn.setAttribute('aria-expanded', 'false');
       menuBtn.querySelector('.icon-menu').classList.remove('hidden');
       menuBtn.querySelector('.icon-close').classList.add('hidden');
     });
