@@ -764,41 +764,64 @@
     <h2 class="text-3xl sm:text-4xl font-headline font-bold text-on-surface tracking-tight mt-2">
       Quick answers <span class="text-gradient">before you start.</span>
     </h2>
+    <p class="mt-3 text-sm sm:text-base text-on-surface-variant leading-relaxed">
+      The questions that come up most before the first install.
+    </p>
   </div>
-  <div class="max-w-3xl space-y-3" itemscope itemtype="https://schema.org/FAQPage">
-    <details class="faq-item bg-surface-card border border-surface-border rounded-xl p-5" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-      <summary class="flex items-center justify-between gap-3 text-sm font-headline font-semibold text-on-surface">
-        <span itemprop="name">Where does my data and prompt history go?</span>
-        <span class="faq-chevron material-symbols-outlined text-[18px] text-on-surface-muted shrink-0" aria-hidden="true">expand_more</span>
+  <div class="reveal grid grid-cols-1 lg:grid-cols-2 gap-5" itemscope itemtype="https://schema.org/FAQPage">
+    <details class="faq-item group bg-surface-card border border-surface-border rounded-2xl p-6 transition-colors hover:border-primary-container/40" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary class="flex items-center justify-between gap-4 text-base font-headline font-semibold text-on-surface">
+        <span class="flex items-center gap-3.5 min-w-0">
+          <span class="w-10 h-10 rounded-xl bg-primary-container/10 text-primary-accent flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">shield_lock</span>
+          </span>
+          <span itemprop="name">Where does my data and prompt history go?</span>
+        </span>
+        <span class="faq-chevron material-symbols-outlined text-[20px] text-primary-accent shrink-0" aria-hidden="true">expand_more</span>
       </summary>
-      <div class="mt-3 text-xs text-on-surface-variant leading-relaxed" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+      <div class="mt-4 pt-4 border-t border-surface-border-subtle text-sm text-on-surface-variant leading-relaxed" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
         <span itemprop="text">Everything runs locally by default. Requests route through the Sidecar gateway on your machine, request history keeps metadata only, and prompts are forwarded to Codex as a direct account session — Sidecar does not host, log, or store your conversation content.</span>
       </div>
     </details>
-    <details class="faq-item bg-surface-card border border-surface-border rounded-xl p-5" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-      <summary class="flex items-center justify-between gap-3 text-sm font-headline font-semibold text-on-surface">
-        <span itemprop="name">Is there a usage quota or do I pay per request?</span>
-        <span class="faq-chevron material-symbols-outlined text-[18px] text-on-surface-muted shrink-0" aria-hidden="true">expand_more</span>
+    <details class="faq-item group bg-surface-card border border-surface-border rounded-2xl p-6 transition-colors hover:border-primary-container/40" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary class="flex items-center justify-between gap-4 text-base font-headline font-semibold text-on-surface">
+        <span class="flex items-center gap-3.5 min-w-0">
+          <span class="w-10 h-10 rounded-xl bg-primary-container/10 text-primary-accent flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">payments</span>
+          </span>
+          <span itemprop="name">Is there a usage quota or do I pay per request?</span>
+        </span>
+        <span class="faq-chevron material-symbols-outlined text-[20px] text-primary-accent shrink-0" aria-hidden="true">expand_more</span>
       </summary>
-      <div class="mt-3 text-xs text-on-surface-variant leading-relaxed" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+      <div class="mt-4 pt-4 border-t border-surface-border-subtle text-sm text-on-surface-variant leading-relaxed" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
         <span itemprop="text">Sidecar itself is free to use; it adds no per-request fees. Your personal Codex account supplies the model entitlement, so billing follows your own account's plan. Rate limits protect your quota with a configurable safety bucket.</span>
       </div>
     </details>
-    <details class="faq-item bg-surface-card border border-surface-border rounded-xl p-5" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-      <summary class="flex items-center justify-between gap-3 text-sm font-headline font-semibold text-on-surface">
-        <span itemprop="name">Which models does Sidecar work with?</span>
-        <span class="faq-chevron material-symbols-outlined text-[18px] text-on-surface-muted shrink-0" aria-hidden="true">expand_more</span>
+    <details class="faq-item group bg-surface-card border border-surface-border rounded-2xl p-6 transition-colors hover:border-primary-container/40" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary class="flex items-center justify-between gap-4 text-base font-headline font-semibold text-on-surface">
+        <span class="flex items-center gap-3.5 min-w-0">
+          <span class="w-10 h-10 rounded-xl bg-primary-container/10 text-primary-accent flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">bolt</span>
+          </span>
+          <span itemprop="name">Which models does Sidecar work with?</span>
+        </span>
+        <span class="faq-chevron material-symbols-outlined text-[20px] text-primary-accent shrink-0" aria-hidden="true">expand_more</span>
       </summary>
-      <div class="mt-3 text-xs text-on-surface-variant leading-relaxed" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+      <div class="mt-4 pt-4 border-t border-surface-border-subtle text-sm text-on-surface-variant leading-relaxed" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
         <span itemprop="text">Sidecar dispatches to your linked Codex session, so the models available from your Codex account are what you can test — no extra setup per model. Model telemetry (latency, token counts) is reported per request in the dashboard.</span>
       </div>
     </details>
-    <details class="faq-item bg-surface-card border border-surface-border rounded-xl p-5" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
-      <summary class="flex items-center justify-between gap-3 text-sm font-headline font-semibold text-on-surface">
-        <span itemprop="name">What if I need help or hit a connection error?</span>
-        <span class="faq-chevron material-symbols-outlined text-[18px] text-on-surface-muted shrink-0" aria-hidden="true">expand_more</span>
+    <details class="faq-item group bg-surface-card border border-surface-border rounded-2xl p-6 transition-colors hover:border-primary-container/40" itemscope itemprop="mainEntity" itemtype="https://schema.org/Question">
+      <summary class="flex items-center justify-between gap-4 text-base font-headline font-semibold text-on-surface">
+        <span class="flex items-center gap-3.5 min-w-0">
+          <span class="w-10 h-10 rounded-xl bg-primary-container/10 text-primary-accent flex items-center justify-center shrink-0">
+            <span class="material-symbols-outlined text-[20px]">support_agent</span>
+          </span>
+          <span itemprop="name">What if I need help or hit a connection error?</span>
+        </span>
+        <span class="faq-chevron material-symbols-outlined text-[20px] text-primary-accent shrink-0" aria-hidden="true">expand_more</span>
       </summary>
-      <div class="mt-3 text-xs text-on-surface-variant leading-relaxed" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
+      <div class="mt-4 pt-4 border-t border-surface-border-subtle text-sm text-on-surface-variant leading-relaxed" itemscope itemprop="acceptedAnswer" itemtype="https://schema.org/Answer">
         <span itemprop="text">Open an issue on the <a class="text-primary-accent hover:underline" href="https://github.com/dhruv2003/sidecar" rel="noreferrer" target="_blank">Sidecar GitHub repository</a> with your OS version and the test output. For quick checks, run the dashboard's "Test Connection" — it shows whether the local port, upstream handshake, or auth session is the blocker.</span>
       </div>
     </details>
@@ -1012,16 +1035,19 @@
   onScrollP();
 
   // ---- Sticky mobile download bar ----
+  // Requirement: the bar appears once the visitor has scrolled below the
+  // top of the #download CTA section, and body gets .dl-bar-on.
   var dlBar = document.getElementById('mobile-dl-bar');
   var ctaArea = document.getElementById('download');
-  if (dlBar && ctaArea && window.IntersectionObserver) {
-    var dlObs = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        dlBar.classList.toggle('visible', !en.isIntersecting);
-        document.body.classList.toggle('dl-bar-on', !en.isIntersecting);
-      });
-    }, { rootMargin: '-60px 0px -40% 0px' });
-    dlObs.observe(ctaArea);
+  function updateDlBar() {
+    var on = Boolean(ctaArea) && ctaArea.getBoundingClientRect().top < 0;
+    dlBar.classList.toggle('visible', on);
+    document.body.classList.toggle('dl-bar-on', on);
+  }
+  if (dlBar && ctaArea) {
+    window.addEventListener('scroll', updateDlBar, { passive: true });
+    window.addEventListener('resize', updateDlBar, { passive: true });
+    updateDlBar();
   }
 
   // ---- Interactive hero demo ----
