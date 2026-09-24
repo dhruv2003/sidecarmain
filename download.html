@@ -29,150 +29,12 @@
   } catch (e) {}
 })();
 </script>
-<style>
-  :root {
-    --primary: #0037e4;
-    --primary-container: #3155ff;
-    --primary-hover: #002fc8;
-    --primary-accent: #3155ff;
-    --surface: #fdf9ef;
-    --surface-container: #f2eee3;
-    --surface-container-low: #f8f3e9;
-    --surface-container-high: #ece8de;
-    --surface-container-highest: #e6e2d8;
-    --surface-card: #ffffff;
-    --surface-card-subtle: #faf9f6;
-    --surface-border: #d8d5cc;
-    --surface-border-subtle: #e4e1d8;
-    --on-surface: #151515;
-    --on-surface-variant: #444656;
-    --on-surface-muted: #6b6961;
-    --status-success: #12805c;
-    --status-success-bg: #e8f7f0;
-    --status-warning: #b26400;
-    --status-warning-bg: #fff6e5;
-    --status-error: #ba1a1a;
-    --status-error-bg: #ffdad6;
-    --grid-line: rgba(21, 21, 21, 0.05);
-  }
-  .dark {
-    --primary: #4d6dff;
-    --primary-container: #4a68ff;
-    --primary-hover: #6780ff;
-    --primary-accent: #93a6ff;
-    --surface: #0d0e12;
-    --surface-container: #15171c;
-    --surface-container-low: #111318;
-    --surface-container-high: #1b1e24;
-    --surface-container-highest: #22252c;
-    --surface-card: #14161b;
-    --surface-card-subtle: #171a20;
-    --surface-border: #2a2e37;
-    --surface-border-subtle: #20242c;
-    --on-surface: #ecedf1;
-    --on-surface-variant: #b3b6c2;
-    --on-surface-muted: #83879a;
-    --status-success: #3ecf96;
-    --status-success-bg: rgba(62, 207, 150, 0.12);
-    --status-warning: #e5a13c;
-    --status-warning-bg: rgba(229, 161, 60, 0.12);
-    --status-error: #ff7a70;
-    --status-error-bg: rgba(255, 122, 112, 0.12);
-    --grid-line: rgba(236, 237, 241, 0.04);
-  }
-  @layer base {
-    html, body { margin: 0; padding: 0; }
-    body { overscroll-behavior: none; }
-  }
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-track { background: var(--surface); }
-  ::-webkit-scrollbar-thumb { background: var(--surface-border); border-radius: 8px; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--on-surface-muted); }
-  body { transition: background-color 0.3s ease, color 0.3s ease; }
-  .text-gradient {
-    background: linear-gradient(100deg, var(--primary-container) 0%, var(--primary-accent) 55%, #7b9cff 100%);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .dark .text-gradient {
-    background: linear-gradient(100deg, #6e86ff 0%, #93a6ff 55%, #b9c7ff 100%);
-    -webkit-background-clip: text; background-clip: text;
-  }
-  .page-backdrop { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
-  .page-backdrop::before {
-    content: ""; position: absolute; inset: 0;
-    background-image: radial-gradient(var(--grid-line) 1px, transparent 1px);
-    background-size: 26px 26px;
-    mask-image: radial-gradient(ellipse 85% 55% at 50% 0%, black 20%, transparent 70%);
-    -webkit-mask-image: radial-gradient(ellipse 85% 55% at 50% 0%, black 20%, transparent 70%);
-  }
-  .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1), transform 0.65s cubic-bezier(0.22, 1, 0.36, 1); }
-  .reveal.is-visible { opacity: 1; transform: none; }
-  #site-header { transition: box-shadow 0.25s ease; }
-  #site-header.scrolled { box-shadow: 0 6px 24px -12px rgba(0, 0, 0, 0.18); }
-  .lift { transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease; }
-  .lift:hover { transform: translateY(-3px); box-shadow: 0 14px 34px -18px rgba(0, 0, 0, 0.28); }
-  .card-recommended { border-color: var(--primary-container) !important; box-shadow: 0 0 0 1px var(--primary-container), 0 18px 44px -20px rgba(49, 85, 255, 0.45); }
-  .skeleton { position: relative; overflow: hidden; background: var(--surface-container-high); border-radius: 6px; }
-  .skeleton::after {
-    content: ""; position: absolute; inset: 0;
-    background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--on-surface) 6%, transparent), transparent);
-    animation: shimmer 1.4s infinite;
-  }
-  @keyframes shimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-  #mobile-menu { transition: opacity 0.2s ease, transform 0.2s ease; }
-  #mobile-menu.closed { opacity: 0; transform: translateY(-6px); pointer-events: none; }
-  .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
-  :focus-visible { outline: 2px solid var(--primary-accent); outline-offset: 2px; border-radius: 4px; }
-  @media (prefers-reduced-motion: reduce) {
-    .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
-    .skeleton::after { animation: none; }
-  }
-</style>
-<noscript><style>.reveal { opacity: 1 !important; transform: none !important; } .skeleton { display: none; }</style></noscript>
-<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-<script id="tailwind-config">
-tailwind.config = {
-  darkMode: "class",
-  theme: {
-    extend: {
-      colors: {
-        "primary": "var(--primary)",
-        "primary-container": "var(--primary-container)",
-        "primary-hover": "var(--primary-hover)",
-        "primary-accent": "var(--primary-accent)",
-        "on-primary": "#ffffff",
-        "surface": "var(--surface)",
-        "surface-container": "var(--surface-container)",
-        "surface-container-low": "var(--surface-container-low)",
-        "surface-container-high": "var(--surface-container-high)",
-        "surface-container-highest": "var(--surface-container-highest)",
-        "surface-card": "var(--surface-card)",
-        "surface-card-subtle": "var(--surface-card-subtle)",
-        "surface-border": "var(--surface-border)",
-        "surface-border-subtle": "var(--surface-border-subtle)",
-        "on-surface": "var(--on-surface)",
-        "on-surface-variant": "var(--on-surface-variant)",
-        "on-surface-muted": "var(--on-surface-muted)",
-        "status-success": "var(--status-success)",
-        "status-success-bg": "var(--status-success-bg)",
-        "status-warning": "var(--status-warning)",
-        "status-warning-bg": "var(--status-warning-bg)",
-        "status-error": "var(--status-error)",
-        "status-error-bg": "var(--status-error-bg)"
-      },
-      fontFamily: {
-        headline: ["Inter", "sans-serif"],
-        display: ["Inter", "sans-serif"],
-        body: ["Inter", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"]
-      },
-      borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "2xl": "1rem", "full": "9999px" }
-    }
-  }
-}
-</script>
+<noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
+<link rel="stylesheet" href="css/site.css">
 </head>
 <body class="bg-surface font-body text-on-surface antialiased selection:bg-primary-container/15 selection:text-primary-accent">
+<a class="skip-link" href="#main">Skip to content</a>
+<div id="scroll-progress" aria-hidden="true"></div>
 <div class="page-backdrop" aria-hidden="true"></div>
 
 <!-- ================= HEADER ================= -->
@@ -193,6 +55,7 @@ tailwind.config = {
       <a class="px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="index.html#compatibility">Compatibility</a>
       <a class="px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="index.html#privacy">Privacy</a>
       <a class="px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="index.html#planned-next">Roadmap</a>
+      <a class="px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="index.html#faq">FAQ</a>
       <a class="px-3 py-1.5 rounded-lg text-xs font-medium text-on-surface-muted hover:text-on-surface hover:bg-surface-border/40 transition-colors flex items-center gap-1" href="https://github.com/dhruv2003/sidecar" rel="noreferrer" target="_blank">GitHub <span class="material-symbols-outlined text-[13px] text-on-surface-muted">arrow_outward</span></a>
     </nav>
     <div class="flex items-center gap-2.5 shrink-0">
@@ -214,6 +77,7 @@ tailwind.config = {
       <a class="px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="index.html#compatibility">Compatibility</a>
       <a class="px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="index.html#privacy">Privacy</a>
       <a class="px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="index.html#planned-next">Roadmap</a>
+      <a class="px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors" href="index.html#faq">FAQ</a>
       <a class="px-3 py-2.5 rounded-lg text-sm font-medium text-on-surface-variant hover:text-on-surface hover:bg-surface-border/40 transition-colors flex items-center gap-1.5" href="https://github.com/dhruv2003/sidecar" rel="noreferrer" target="_blank">GitHub <span class="material-symbols-outlined text-[14px]">arrow_outward</span></a>
       <div class="pt-3 mt-2 border-t border-surface-border flex flex-col gap-2">
         <a class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-medium bg-primary-container text-on-primary" href="index.html#preview">Open dashboard</a>
@@ -221,15 +85,16 @@ tailwind.config = {
     </nav>
   </div>
 </header>
-<main class="relative z-10 w-full pt-16 min-h-screen flex flex-col">
+<main id="main" tabindex="-1" class="relative z-10 w-full pt-16 min-h-screen flex flex-col">
   <section class="max-w-4xl mx-auto px-6 lg:px-12 pt-16 pb-20 lg:pt-24 w-full flex-1">
     <div class="flex flex-col items-center text-center">
       <img src="assets/brand/svg/sidecar-app-icon-blue.svg" alt="Sidecar app icon" class="reveal w-16 h-16 rounded-2xl shadow-lg mb-6">
 
       <div class="reveal inline-flex items-center gap-2 px-3 py-1 rounded-full bg-surface-card border border-surface-border text-xs font-medium text-on-surface shadow-sm mb-5" style="transition-delay:60ms">
         <span class="w-2 h-2 rounded-full bg-status-success"></span>
-        <span id="version-line">Fetching latest release…</span>
+        <span id="version-line" class="flex items-center gap-2"><span class="skeleton inline-block w-40 h-3"></span></span>
       </div>
+      <p id="freshness" class="reveal hidden text-[11px] text-on-surface-muted font-mono" style="transition-delay:90ms"></p>
 
       <h1 class="reveal text-3xl sm:text-4xl lg:text-5xl font-headline font-extrabold tracking-tight text-on-surface leading-[1.1]" style="transition-delay:120ms">
         Download <span class="text-gradient">Sidecar</span>
@@ -250,10 +115,13 @@ tailwind.config = {
           <span id="badge-mac" class="hidden px-2.5 py-0.5 rounded-full text-[10px] font-semibold bg-primary-container/10 text-primary-accent border border-primary-container/30">Recommended for you</span>
         </div>
         <h2 class="font-headline font-bold text-lg text-on-surface">macOS</h2>
-        <p class="mt-1 text-xs text-on-surface-variant">Apple Silicon (M1 and later)</p>
+        <div class="mt-1 flex items-center flex-wrap gap-1.5">
+          <p class="text-xs text-on-surface-variant">Apple Silicon (M1 and later)</p>
+          <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold font-mono bg-primary-container/10 text-primary-accent border border-primary-container/30">Apple Silicon only</span>
+        </div>
         <div class="mt-4 space-y-1.5 text-[11px] font-mono text-on-surface-muted">
-          <p id="file-mac" class="truncate">—</p>
-          <p id="size-mac">—</p>
+          <p id="file-mac" class="truncate"><span class="skeleton inline-block w-44 h-3"></span></p>
+          <p id="size-mac"><span class="skeleton inline-block w-24 h-3"></span></p>
         </div>
         <a id="btn-mac" href="https://github.com/dhruv2003/sidecar/releases/latest" rel="noreferrer" class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-primary-container text-on-primary font-medium text-sm shadow-md hover:bg-primary-hover transition-all">
           <span class="material-symbols-outlined text-[18px]">download</span>
@@ -272,8 +140,8 @@ tailwind.config = {
         <h2 class="font-headline font-bold text-lg text-on-surface">Windows</h2>
         <p class="mt-1 text-xs text-on-surface-variant">64-bit (x64) installer</p>
         <div class="mt-4 space-y-1.5 text-[11px] font-mono text-on-surface-muted">
-          <p id="file-win" class="truncate">—</p>
-          <p id="size-win">—</p>
+          <p id="file-win" class="truncate"><span class="skeleton inline-block w-44 h-3"></span></p>
+          <p id="size-win"><span class="skeleton inline-block w-24 h-3"></span></p>
         </div>
         <a id="btn-win" href="https://github.com/dhruv2003/sidecar/releases/latest" rel="noreferrer" class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-surface-card-subtle border border-surface-border text-on-surface font-medium text-sm hover:bg-surface-border/40 transition-all">
           <span class="material-symbols-outlined text-[18px]">download</span>
@@ -283,12 +151,31 @@ tailwind.config = {
     </div>
 
     <div class="reveal mt-8 max-w-2xl mx-auto w-full space-y-3" style="transition-delay:300ms">
+      <div id="whats-new" class="hidden p-5 rounded-xl bg-surface-card border border-surface-border">
+        <div class="flex items-center justify-between gap-3 mb-3">
+          <p class="font-headline font-semibold text-xs text-on-surface flex items-center gap-2">
+            <span class="material-symbols-outlined text-[16px] text-primary-accent">auto_awesome</span>
+            <span id="whats-new-title">What&rsquo;s new</span>
+          </p>
+          <a href="https://github.com/dhruv2003/sidecar/releases" rel="noreferrer" target="_blank" class="text-[11px] text-primary-accent hover:underline font-medium shrink-0">All releases</a>
+        </div>
+        <div id="whats-new-body" class="text-xs text-on-surface-variant leading-relaxed space-y-2 [&_a]:text-primary-accent [&_a]:hover:underline [&_a]:font-medium"></div>
+      </div>
+
+      <div class="p-4 rounded-xl bg-surface-card border border-surface-border flex items-center justify-center flex-wrap gap-x-5 gap-y-2 text-[11px] text-on-surface-variant">
+        <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-status-success">verified_user</span> Signed build</span>
+        <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-status-success">fingerprint</span> SHA256SUMS</span>
+        <span class="inline-flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-status-success">database</span> Provenance attestation</span>
+        <a href="https://github.com/dhruv2003/sidecar/releases" rel="noreferrer" target="_blank" class="inline-flex items-center gap-1 text-primary-accent hover:underline font-medium">Browse all releases <span class="material-symbols-outlined text-[13px]">arrow_outward</span></a>
+      </div>
+
       <div class="p-4 rounded-xl bg-surface-card-subtle border border-surface-border flex items-start gap-3 text-xs text-on-surface-variant">
         <span class="material-symbols-outlined text-[18px] text-status-success shrink-0 mt-0.5">verified</span>
         <div>
           Builds are signed and ship with SHA256 checksums and provenance attestations.
-          <a href="https://github.com/dhruv2003/sidecar/releases" rel="noreferrer" target="_blank" class="text-primary-accent hover:underline font-medium">Browse all releases</a>
-          to verify a download or grab an older version.
+          Verifying a download is a two-minute check — see the
+          <a href="https://github.com/dhruv2003/sidecar" rel="noreferrer" target="_blank" class="text-primary-accent hover:underline font-medium">README</a>
+          for exact commands.
         </div>
       </div>
       <p id="fallback-note" class="hidden text-center text-[11px] text-status-warning">
@@ -354,6 +241,15 @@ tailwind.config = {
     header.classList.toggle('scrolled', window.scrollY > 8);
   }, { passive: true });
 
+  // ---- Scroll progress bar ----
+  var progressBar = document.getElementById('scroll-progress');
+  function onScrollP() {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.transform = 'scaleX(' + (max > 0 ? Math.min(window.scrollY / max, 1) : 0) + ')';
+  }
+  window.addEventListener('scroll', onScrollP, { passive: true });
+  onScrollP();
+
   // ---- Reveal ----
   document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('is-visible'); });
 
@@ -393,11 +289,54 @@ tailwind.config = {
   }
   var resolved = false;
 
-  function applyRelease(version, dateIso, mac, win) {
+  function escapeHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+  function linkify(s) {
+    return s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/(https?:\/\/[^\s<)]+)/g, '<a href="$1" rel="noreferrer" target="_blank">$1</a>');
+  }
+  function renderNotes(title, notes) {
+    var box = document.getElementById('whats-new');
+    if (!box || !notes) return;
+    if (!String(notes).trim()) return;
+    var body = document.getElementById('whats-new-body');
+    var out = '';
+    String(notes).split(/\r?\n/).forEach(function (line) {
+      var t = line.trim();
+      if (t.replace(/^[-*]\s*/, '').replace(/^#+\s*/, '') === '') return;
+      if (/^#{1,3}\s/.test(t)) {
+        out += '<p class="font-semibold text-on-surface pt-1">' + linkify(escapeHtml(t.replace(/^#+\s*/, ''))) + '</p>';
+      } else if (/^[-*]\s/.test(t)) {
+        out += '<p class="flex gap-2"><span class="text-primary-accent shrink-0">•</span><span>' + linkify(escapeHtml(t.replace(/^[-*]\s*/, ''))) + '</span></p>';
+      } else {
+        out += '<p>' + linkify(escapeHtml(t)) + '</p>';
+      }
+    });
+    body.innerHTML = out;
+    document.getElementById('whats-new-title').textContent = 'What\u2019s new in ' + title;
+    box.classList.remove('hidden');
+  }
+  function fmtAge(iso) {
+    try {
+      var days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+      if (days <= 0) return 'Released today';
+      if (days === 1) return 'Released yesterday';
+      return 'Released ' + days + ' days ago';
+    } catch (e) { return ''; }
+  }
+
+  function applyRelease(version, dateIso, mac, win, notes, notesTitle) {
     if (version) {
       var date = fmtDate(dateIso);
       versionLine.textContent = 'Latest: ' + version + (date ? ' • ' + date : '');
+      var freshnessLine = document.getElementById('freshness');
+      if (dateIso) {
+        freshnessLine.textContent = fmtAge(dateIso) + ' • via official GitHub releases';
+        freshnessLine.classList.remove('hidden');
+      }
     }
+    if (notes) renderNotes(notesTitle || version || 'this release', notes);
     if (mac && mac.url) {
       btnMac.href = mac.url;
       document.getElementById('file-mac').textContent = mac.name || 'macOS disk image';
@@ -424,7 +363,7 @@ tailwind.config = {
   // (same origin, no rate limits, refreshed every 30 min / on dispatch).
   var snapshot = fetch('latest-release.json', { cache: 'no-cache' })
     .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-    .then(function (d) { applyRelease(d.version, d.published_at, d.mac, d.win); });
+    .then(function (d) { applyRelease(d.version, d.published_at, d.mac, d.win, d.notes, d.title); });
 
   // Source 2: live GitHub API — upgrades to the absolute newest release when
   // the visitor is not rate-limited. Overrides the snapshot if fresher.
@@ -437,12 +376,21 @@ tailwind.config = {
         rel.tag_name || rel.name,
         rel.published_at,
         mac && { name: mac.name, size: mac.size, url: mac.browser_download_url },
-        win && { name: win.name, size: win.size, url: win.browser_download_url }
+        win && { name: win.name, size: win.size, url: win.browser_download_url },
+        rel.body,
+        rel.name || rel.tag_name
       );
     });
 
   // Source 3: plain links to the releases page if neither worked.
   Promise.allSettled([snapshot, live]).then(function () { maybeFallback(); });
+
+  // ---- Service worker ----
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function () {
+      navigator.serviceWorker.register('sw.js').catch(function () {});
+    });
+  }
 })();
 </script>
 

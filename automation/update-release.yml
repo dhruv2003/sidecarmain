@@ -48,6 +48,8 @@ jobs:
               'version': rel.get('tag_name') or rel.get('name'),
               'published_at': rel.get('published_at'),
               'release_page': rel.get('html_url'),
+              'title': (rel.get('name') or rel.get('tag_name') or '').strip(),
+              'notes': (rel.get('body') or '').strip(),
               'mac': pick(mac),
               'win': pick(win),
           }
