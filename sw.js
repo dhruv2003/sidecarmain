@@ -1,17 +1,16 @@
-/* Sidecar landing site — service worker (offline-first, stale-while-revalidate).
- * Caches the shell and core assets so repeat visits load instantly and work
- * with no connection. Release data (latest-release.json) is always refetched.
+/* Sidecar landing site — service worker (offline-first).
+ * v2: network-first for the shell (HTML/CSS/JSON) so updates propagate on the
+ * next load; stale-while-revalidate only for heavy brand assets.
  */
 'use strict';
 
-var CACHE = 'sidecar-site-v1';
+var CACHE = 'sidecar-site-v2';
 var SHELL = [
   './',
   './index.html',
   './download.html',
-  './css/site.css',
+  './css/site.css?v=2',
   './favicon.svg',
-  './latest-release.json',
   './assets/brand/svg/sidecar-symbol.svg',
   './assets/brand/svg/sidecar-symbol-white.svg',
   './assets/brand/svg/sidecar-app-icon-blue.svg',
@@ -21,6 +20,11 @@ var SHELL = [
   './assets/brand/png/sidecar-icon-16.png',
   './assets/brand/png/app-icon-blue-180.png'
 ];
+
+function put(cache, req, resp) {
+  if (resp && resp.ok) cache.put(req, resp.clone());
+  return resp;
+}
 
 self.addEventListener('install', function (event) {
   event.waitUntil(
@@ -46,31 +50,28 @@ self.addEventListener('fetch', function (event) {
   var url = new URL(req.url);
   if (url.origin !== location.origin) return; // never proxy cross-origin (GitHub API, fonts)
 
-  // Release snapshot must stay fresh: network-first, cached copy only as fallback.
-  if (url.pathname.indexOf('latest-release.json') !== -1) {
+  var isShell = req.mode === 'navigate' ||
+    /\.(html|css|js|json)(\?.*)?$/.test(url.pathname);
+
+  if (isShell) {
+    // Network-first: always try fresh, cached copy only as offline fallback.
     event.respondWith(
-      fetch(req).then(function (resp) {
-        if (resp && resp.ok) {
-          var copy = resp.clone();
-          caches.open(CACHE).then(function (cache) { cache.put(req, copy); });
-        }
-        return resp;
-      }).catch(function () { return caches.match(req); })
+      caches.open(CACHE).then(function (cache) {
+        return fetch(req).then(function (resp) { return put(cache, req, resp); })
+          .catch(function () { return cache.match(req).then(function (m) { return m || cache.match('./index.html'); }); });
+      })
     );
     return;
   }
 
-  // Everything else: stale-while-revalidate.
+  // Images / other assets: stale-while-revalidate.
   event.respondWith(
-    caches.match(req).then(function (cached) {
-      var network = fetch(req).then(function (resp) {
-        if (resp && resp.ok) {
-          var copy = resp.clone();
-          caches.open(CACHE).then(function (cache) { cache.put(req, copy); });
-        }
-        return resp;
-      }).catch(function () { return cached; });
-      return cached || network;
+    caches.open(CACHE).then(function (cache) {
+      return cache.match(req).then(function (cached) {
+        var network = fetch(req).then(function (resp) { return put(cache, req, resp); })
+          .catch(function () { return cached; });
+        return cached || network;
+      });
     })
   );
 });
