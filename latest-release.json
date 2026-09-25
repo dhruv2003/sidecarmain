@@ -1,17 +1,17 @@
 {
-  "version": "v1.4.3",
-  "published_at": "2026-09-22T17:30:42Z",
-  "release_page": "https://github.com/dhruv2003/sidecar/releases/tag/v1.4.3",
-  "title": "Sidecar v1.4.3",
-  "notes": "# Sidecar v1.4.3 \u2014 brand rename hotfix\r\n\r\nSidecar is the local AI gateway for proving an idea before paying to scale it. This hotfix completes the product rename from Codex CLI API to **Sidecar**, brings the new brand kit into the shipped app, and points customers to [sidecar.co.in](https://sidecar.co.in).\r\n\r\n> Pay only for scale, not for POC.\r\n\r\n## What changed\r\n\r\n- Renamed the desktop app, dashboard, window title, tray label, About screen, installer copy, and documentation to Sidecar.\r\n- Replaced the old product mark with the Sidecar cobalt, charcoal, off-white, and white brand system across the desktop shell, dashboard, and native app icons.\r\n- Added the complete source brand pack under `brand-assets/Sidecar_Brand_Assets_Pack/` so future website and product surfaces use the same assets.\r\n- Updated product-facing links and release metadata to `www.sidecar.co.in`.\r\n\r\n## Compatibility\r\n\r\nThis is a branding and packaging hotfix. Existing API routes, API key format, workspace behavior, updater feed, updater identifier, and signing identity are unchanged. The source package and desktop crate are now named Sidecar, while the runtime compatibility contracts remain stable. Existing Sidecar installations can update without reconfiguring their local gateway or IDE connection.\r\n\r\nThe product remains focused on testing proof-of-concepts locally before committing to production infrastructure. IDE connections are supported as a convenience, but the core value is validating what works before paying for scale.\r\n\r\nCreated by Dhruv Bhagatkar \u00b7 https://thisisdhruv.in",
+  "version": "v1.4.4",
+  "published_at": "2026-09-25T05:41:13Z",
+  "release_page": "https://github.com/dhruv2003/sidecar/releases/tag/v1.4.4",
+  "title": "Sidecar v1.4.4",
+  "notes": "# Sidecar v1.4.4 \u2014 GPT-6 model hotfix\n\nThis hotfix adds GPT-6 Sol and GPT-6 Luna to Sidecar's default model catalog. They are available in the setup and connection model pickers and through authenticated model discovery.\n\n## What changed\n\n- Added `gpt-6-sol` and `gpt-6-luna` to the default model list and example configuration.\n- Enabled image input for both models, plus `ultra` reasoning for Sol. Luna supports `low` through `max`.\n- Updated the bundled Codex CLI to 0.155.0, the minimum version that supports both models.\n\n## Installers\n\n- [Windows x64 installer (.exe)](https://github.com/dhruv2003/sidecar/releases/download/v1.4.4/sidecar_1.4.4_x64-setup.exe)\n- [macOS Apple Silicon (.dmg)](https://github.com/dhruv2003/sidecar/releases/download/v1.4.4/sidecar_1.4.4_aarch64.dmg)\n\nAlready installed? Update through **Settings \u2192 Check for updates \u2192 Download update \u2192 Install update**.\n\n## Automatic-update support files\n\nYou do not need to download `latest.json`, `.app.tar.gz`, `.sig`, `SHA256SUMS`, or provenance files manually. The app downloads and verifies its update automatically. Use the installer links above for manual installation.\n\nCreated by Dhruv Bhagatkar \u00b7 https://thisisdhruv.in",
   "mac": {
-    "name": "sidecar_1.4.3_aarch64.dmg",
-    "size": 170937929,
-    "url": "https://github.com/dhruv2003/sidecar/releases/download/v1.4.3/sidecar_1.4.3_aarch64.dmg"
+    "name": "sidecar_1.4.4_aarch64.dmg",
+    "size": 183179071,
+    "url": "https://github.com/dhruv2003/sidecar/releases/download/v1.4.4/sidecar_1.4.4_aarch64.dmg"
   },
   "win": {
-    "name": "sidecar_1.4.3_x64-setup.exe",
-    "size": 119530692,
-    "url": "https://github.com/dhruv2003/sidecar/releases/download/v1.4.3/sidecar_1.4.3_x64-setup.exe"
+    "name": "sidecar_1.4.4_x64-setup.exe",
+    "size": 121638432,
+    "url": "https://github.com/dhruv2003/sidecar/releases/download/v1.4.4/sidecar_1.4.4_x64-setup.exe"
   }
 }
