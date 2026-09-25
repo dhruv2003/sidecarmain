@@ -8,14 +8,17 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-AUTH=()
-if [ -n "${GH_TOKEN:-}" ]; then AUTH=(-H "Authorization: Bearer ${GH_TOKEN}"); fi
+CURL_ARGS=(-H "Accept: application/vnd.github+json")
+if [ -n "${GH_TOKEN:-}" ]; then
+  CURL_ARGS+=(-H "Authorization: Bearer ${GH_TOKEN}")
+fi
 
-curl -sS "${AUTH[@]}" -H "Accept: application/vnd.github+json" \
+curl -sS "${CURL_ARGS[@]}" \
   https://api.github.com/repos/dhruv2003/sidecar/releases/latest -o /tmp/sidecar-rel.json
 
 python3 - <<'EOF'
 import json
+from scripts.release_notes import omit_download_sections
 
 rel = json.load(open('/tmp/sidecar-rel.json'))
 if 'tag_name' not in rel:
@@ -34,7 +37,7 @@ out = {
     'published_at': rel.get('published_at'),
     'release_page': rel.get('html_url'),
     'title': (rel.get('name') or rel.get('tag_name') or '').strip(),
-    'notes': (rel.get('body') or '').strip(),
+    'notes': omit_download_sections(rel.get('body') or ''),
     'mac': pick(mac),
     'win': pick(win),
 }

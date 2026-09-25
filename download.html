@@ -298,10 +298,28 @@
     return s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
       .replace(/(https?:\/\/[^\s<)]+)/g, '<a href="$1" rel="noreferrer" target="_blank">$1</a>');
   }
+  function omitDownloadSections(notes) {
+    var hidden = false;
+    var hiddenLevel = 0;
+    return String(notes).split(/\r?\n/).filter(function (line) {
+      var heading = line.trim().match(/^(#{1,6})\s+(.+?)\s*#*$/);
+      if (heading) {
+        var level = heading[1].length;
+        var title = heading[2].trim().toLowerCase();
+        if (hidden && level <= hiddenLevel) hidden = false;
+        if (title === 'installers' || title === 'automatic-update support files') {
+          hidden = true;
+          hiddenLevel = level;
+        }
+      }
+      return !hidden;
+    }).join('\n');
+  }
   function renderNotes(title, notes) {
     var box = document.getElementById('whats-new');
     if (!box || !notes) return;
-    if (!String(notes).trim()) return;
+    notes = omitDownloadSections(notes);
+    if (!notes.trim()) return;
     var body = document.getElementById('whats-new-body');
     var out = '';
     String(notes).split(/\r?\n/).forEach(function (line) {

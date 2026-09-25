@@ -46,7 +46,9 @@ stays current automatically via three layers:
 2. **`latest-release.json`** (fallback) — a same-origin snapshot in this repo
    used when a visitor hits the API rate limit (shared IPs). It also carries a
    `title` + `notes` summary that powers the "What's new" panel on the download
-   page. Refresh it after publishing a release with
+   page. Installer and automatic-update support sections are omitted from the
+   notes because the page already provides dedicated download buttons. Refresh
+   it after publishing a release with
    `./scripts/update-release.sh`, or enable the optional Actions template below.
 3. **Releases page** (last resort) — if neither source loads, the buttons
    link to `github.com/dhruv2003/sidecar/releases/latest`.
