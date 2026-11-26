@@ -7,20 +7,26 @@ account, run a real test, and decide if an idea deserves production investment
 
 ## Stack
 
-- Single-file static page (`index.html`)
-- [Tailwind CSS](https://tailwindcss.com) via CDN (utility styling)
-- Inter + JetBrains Mono via Google Fonts
-- Material Symbols icons
-- Vanilla JS (no build step, no dependencies)
+- Static HTML, CSS and JavaScript. No build step and no runtime dependencies.
+- `css/site.css` holds the "Split Pane" design system. Its colour tokens match the
+  desktop app (`dhruv2003/sidecar`, `src/public/styles.css`), so the site and the
+  app look like one product. Light and dark themes follow the system setting, and
+  the header switch remembers a manual choice.
+- Geist and Geist Mono are self-hosted in `assets/fonts` (SIL Open Font License).
+- `js/site.js` runs on every page: theme, mobile menu, scrollspy, mobile download
+  bar and the service worker. `js/home.js` drives the home page demos.
+  `js/download.js` resolves the latest release.
+- Brand assets in `assets/brand` are copied from the app repo's brand kit.
 
-## Features of this site
+## Motion
 
-- Light and dark themes (toggle in the header, respects system preference,
-  persists via `localStorage`)
-- Scroll-reveal animations with `prefers-reduced-motion` support
-- Scrollspy navigation with a full mobile menu
-- Copy-to-clipboard endpoint snippets
-- Fully responsive: every section stacks and reflows on small screens
+- The hero app window boots and runs its own connection test.
+- "Under the hood" animates one request through the gateway's checks. A burst
+  shows a 429 that stops locally.
+- The request log streams example rows while it is on screen.
+- Sections reveal with scroll-driven CSS animations. Browsers without support show
+  the content without the animation.
+- Everything respects `prefers-reduced-motion`.
 
 ## Run locally
 

@@ -1,17 +1,17 @@
 {
-  "version": "v1.4.4",
-  "published_at": "2026-09-25T05:41:13Z",
-  "release_page": "https://github.com/dhruv2003/sidecar/releases/tag/v1.4.4",
-  "title": "Sidecar v1.4.4",
-  "notes": "# Sidecar v1.4.4 \u2014 GPT-6 model hotfix\n\nThis hotfix adds GPT-6 Sol and GPT-6 Luna to Sidecar's default model catalog. They are available in the setup and connection model pickers and through authenticated model discovery.\n\n## What changed\n\n- Added `gpt-6-sol` and `gpt-6-luna` to the default model list and example configuration.\n- Enabled image input for both models, plus `ultra` reasoning for Sol. Luna supports `low` through `max`.\n- Updated the bundled Codex CLI to 0.155.0, the minimum version that supports both models.\n\n## Installers\n\n- [Windows x64 installer (.exe)](https://github.com/dhruv2003/sidecar/releases/download/v1.4.4/sidecar_1.4.4_x64-setup.exe)\n- [macOS Apple Silicon (.dmg)](https://github.com/dhruv2003/sidecar/releases/download/v1.4.4/sidecar_1.4.4_aarch64.dmg)\n\nAlready installed? Update through **Settings \u2192 Check for updates \u2192 Download update \u2192 Install update**.\n\n## Automatic-update support files\n\nYou do not need to download `latest.json`, `.app.tar.gz`, `.sig`, `SHA256SUMS`, or provenance files manually. The app downloads and verifies its update automatically. Use the installer links above for manual installation.\n\nCreated by Dhruv Bhagatkar \u00b7 https://thisisdhruv.in",
+  "version": "v1.5.0",
+  "published_at": "2026-11-26T08:13:20Z",
+  "release_page": "https://github.com/dhruv2003/sidecar/releases/tag/v1.5.0",
+  "title": "Sidecar v1.5.0",
+  "notes": "# Sidecar v1.5.0 \u2014 a new look\n\nSidecar has a new identity and a redesigned app. It also includes the automatic model catalog from v1.4.5: models now come straight from the bundled Codex CLI, so new ones show up without waiting for a Sidecar update.\n\n## New identity\n\n- A new logo, **Split Pane**: a main pane with a narrow pane docked beside it. Your editor and its sidecar.\n- New app icons on macOS and Windows, and a refreshed brand kit.\n- Geist and Geist Mono throughout, bundled with the app so it works offline.\n\n## Redesigned app\n\n- **Home** answers \"is it working?\" at a glance, with a status orb and one clear next step, whether that's creating a key, signing in, or running a test.\n- **Keys** show their setup progress (created \u2192 signed in \u2192 tested) right on each key, with an inspector beside the list.\n- **Connect** puts VS Code, terminal, browser-app and endpoint snippets in one tabbed panel. Paste your secret once and every snippet fills in.\n- Model picker shows each model's reasoning range and image support.\n- **Activity** and **Health** replace Requests and Diagnostics, with live request counts in the sidebar.\n- Command palette: press <kbd>\u2318K</kbd> (or <kbd>Ctrl K</kbd>) to jump anywhere or run an action. <kbd>N</kbd> creates a key, and <kbd>G</kbd> then <kbd>H</kbd>/<kbd>K</kbd>/<kbd>C</kbd>/<kbd>A</kbd> jumps between pages.\n- Pop-up confirmations for copies, tests, sign-ins and key changes.\n- Motion throughout: page and card entrances, animated counters and sparklines, a sliding tab indicator, and a drawing check mark when a test passes. Everything respects your system's reduced-motion setting.\n- A calmer first-run screen in the desktop app, and matching light and dark themes everywhere.\n\n## Fixes\n\n- Saved reasoning preferences and desktop connection defaults now keep `max` and `ultra` instead of silently dropping them.\n\n## Also in this release (from v1.4.5)\n\n- Models are read from the Codex CLI's own catalog at startup, after each sign-in, and every six hours. Retired models such as `gpt-5.4-mini` drop out automatically.\n- Added `gpt-6.2-sol`, `gpt-6.2-astra`, `gpt-6.1-terra` and `gpt-6.1-sol`.\n- Bundled Codex CLI updated to 0.172.0.",
   "mac": {
-    "name": "sidecar_1.4.4_aarch64.dmg",
-    "size": 183179071,
-    "url": "https://github.com/dhruv2003/sidecar/releases/download/v1.4.4/sidecar_1.4.4_aarch64.dmg"
+    "name": "sidecar_1.5.0_aarch64.dmg",
+    "size": 217634709,
+    "url": "https://github.com/dhruv2003/sidecar/releases/download/v1.5.0/sidecar_1.5.0_aarch64.dmg"
   },
   "win": {
-    "name": "sidecar_1.4.4_x64-setup.exe",
-    "size": 121638432,
-    "url": "https://github.com/dhruv2003/sidecar/releases/download/v1.4.4/sidecar_1.4.4_x64-setup.exe"
+    "name": "sidecar_1.5.0_x64-setup.exe",
+    "size": 156324524,
+    "url": "https://github.com/dhruv2003/sidecar/releases/download/v1.5.0/sidecar_1.5.0_x64-setup.exe"
   }
 }

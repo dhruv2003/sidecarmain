@@ -1,13 +1,9 @@
 {
   "name": "sidecarmain",
   "private": true,
-  "version": "1.0.0",
-  "description": "Sidecar landing page (static, prebuilt Tailwind CSS)",
+  "version": "2.0.0",
+  "description": "Sidecar landing page (static HTML, CSS and JS; no build step)",
   "scripts": {
-    "build": "tailwindcss -i ./src/input.css -o ./css/site.css --minify",
-    "build:watch": "tailwindcss -i ./src/input.css -o ./css/site.css --watch"
-  },
-  "devDependencies": {
-    "tailwindcss": "^3.4.17"
+    "start": "npx --yes serve ."
   }
 }

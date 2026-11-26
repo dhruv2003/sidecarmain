@@ -1,12 +1,21 @@
 {
   "brand": "Sidecar",
-  "primary_blue": "#3155FF",
-  "charcoal": "#0F172A",
-  "off_white": "#F8F9FB",
+  "mark": "Split Pane: a main pane with a narrow pane docked beside it",
+  "cobalt": "#3155FF",
+  "cobalt_on_dark": "#4D6BFF",
+  "charcoal": "#0C0E13",
+  "off_white": "#F7F8FA",
   "white": "#FFFFFF",
+  "ready": "#3CCF91",
+  "pending": "#F0B54A",
+  "error": "#FF6B7A",
+  "typeface": {
+    "interface": "Geist",
+    "code": "Geist Mono"
+  },
   "usage": {
-    "primary": "Charcoal + Cobalt Blue",
-    "dark_mode": "White + Cobalt Blue on Charcoal",
-    "monochrome": "Black or White only"
+    "primary": "Cobalt main pane + charcoal side pane on light",
+    "dark_mode": "Cobalt main pane + white side pane on charcoal",
+    "monochrome": "Both panes in black or white"
   }
 }
